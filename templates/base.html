@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USParty - Revenda de ingressos </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🎉 USParty</div>
+        <div class="links">
+            <a href="#">Festas</a>
+            <a href="#">Meus Ingressos</a>
+            <a href="#">Perfil</a>
+        </div>
+    </nav>
+
+    <main style="padding: 20px;">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
