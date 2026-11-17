@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <header class="header-festas">
+        <h1>Área de Festas</h1>
+        
+        <div class="botoes">
+            <a href="#" class="btn-primary">Ver Feed</a>
+            <a href="#" class="btn-primary">Criar Nova Festa</a>
+        </div>
+    </header>
+
+    <div class="conteudo-festas">
+        {% block festas_content %}
+        {% endblock %}
+    </div>
+{% endblock %}
