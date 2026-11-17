@@ -1,3 +1,11 @@
 from django.shortcuts import render
+from .models import Festa 
 
-# Create your views here.
+def feed_festas(request):
+
+    festas_cadastradas = Festa.objects.all()
+    contexto = {
+        'festas': festas_cadastradas
+    }
+    
+    return render(request, 'festas/feed.html', contexto)

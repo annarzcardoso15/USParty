@@ -1,0 +1,111 @@
+:root {
+    --cerulean: #247BA0;
+    --air-force-blue: #5386A6;
+    --lavender-grey: #8191AB;
+    --soft-blossom: #DEA6B6;
+    --pastel-petal: #fcecf1;
+    --berry-crush: #B34262;
+    --vintage-berry: #86324A;
+    --ash-grey: #C2D6C3;
+    --fern: #7c9b7e;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--pastel-petal);
+    color: var(--vintage-berry);
+}
+
+
+.navbar {
+    background-color: var(--fern);
+    padding: 1rem 5%; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.navbar .links {
+    display: flex;
+    gap: 20px; 
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.navbar a:hover {
+    color: var(--soft-blossom);
+}
+
+
+main {
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 40px 20px; 
+}
+
+.header-festas {
+    border-bottom: 3px solid var(--fern);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    display: flex; 
+    flex-direction: column;
+    gap: 15px; 
+}
+
+.header-festas h1 {
+    color: var(--cerulean);
+}
+
+.header-festas .botoes {
+    display: flex;
+    gap: 15px; 
+}
+
+
+.btn-primary {
+    background-color: var(--berry-crush);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block; 
+}
+
+.btn-primary:hover {
+    background-color: var(--vintage-berry);
+}
+
+
+.btn-verde {
+    background-color: var(--fern);
+}
+.btn-verde:hover {
+    background-color: #456B48; 
+}
+
+
+.conteudo-festas h2 {
+    margin-bottom: 20px;
+    color: var(--vintage-berry);
+}
