@@ -1,0 +1,23 @@
+{% extends 'festas/base_festas.html' %}
+
+{% block festas_content %}
+    <a href="{% url 'feed_festas' %}" style="color: var(--lavender-grey); text-decoration: none;">&larr; Voltar para o Feed</a>
+    
+    <div style="background-color: white; padding: 30px; border-radius: 8px; border-top: 5px solid var(--cerulean); margin-top: 20px;">
+        <h1 style="color: var(--vintage-berry); margin-bottom: 10px;">{{ festa.nome_festa }}</h1>
+        
+        <p><strong>Data:</strong> {{ festa.data_festa }}</p>
+        <p><strong>Lotes Cadastrados:</strong> {{ festa.lotes }}</p>
+        <p><strong>Tipos de Ingresso:</strong> {{ festa.tipos_ingressos_disponiveis }}</p>
+        
+        <h3 style="margin-top: 20px; color: var(--cerulean);">Organizadores:</h3>
+        <ul>
+
+            {% for org in festa.organizadores.all %}
+                <li>{{ org.nome }}</li>
+            {% empty %}
+                <li>Nenhum organizador registrado ainda.</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

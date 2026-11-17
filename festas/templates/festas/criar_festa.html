@@ -1,0 +1,18 @@
+{% extends 'festas/base_festas.html' %}
+
+{% block festas_content %}
+    <h2>Cadastrar Nova Festa</h2>
+    
+    <div style="background-color: white; padding: 20px; border-radius: 8px; border: 2px solid var(--cerulean); max-width: 600px;">
+       
+        <form method="POST">
+            {% csrf_token %} 
+            
+            {{ form.as_p }}
+            
+            <button type="submit" class="btn-primary" style="margin-top: 15px; width: 100%;">
+                Salvar Festa
+            </button>
+        </form>
+    </div>
+{% endblock %}
