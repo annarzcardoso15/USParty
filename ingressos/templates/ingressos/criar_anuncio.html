@@ -1,0 +1,29 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<main>
+    
+
+    <div class="header-festas">
+        <h1>Área de Ingressos</h1>
+        
+        <div class="botoes">
+            <a href="#" class="btn-primary">Voltar para Vitrine</a>
+        </div>
+    </div>
+
+
+    <div class="conteudo-festas">
+        <h2>Vender Novo Ingresso</h2>
+        
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <br>
+            <button type="submit" class="btn-primary">Anunciar Ingresso</button>
+        </form>
+    </div>
+
+</main>
+{% endblock %}
