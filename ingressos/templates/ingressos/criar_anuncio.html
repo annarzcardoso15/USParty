@@ -1,19 +1,29 @@
 {% extends 'base.html' %} 
 
 {% block content %}
-<div class="container">
-    <h2>Vender Ingresso</h2>
+<main>
     
 
-    <form method="POST" action="">
-        {% csrf_token %}
+    <div class="header-festas">
+        <h1>Área de Ingressos</h1>
         
+        <div class="botoes">
+            <a href="#" class="btn-primary">Voltar para Vitrine</a>
+        </div>
+    </div>
 
-        {{ form.as_p }}
+
+    <div class="conteudo-festas">
+        <h2>Vender Novo Ingresso</h2>
         
-        <button type="submit">Anunciar Ingresso</button>
-    </form>
-    
-    <a href="{% url 'criar_anuncio' %}">Cancelar</a>
-</div>
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <br>
+            <button type="submit" class="btn-primary">Anunciar Ingresso</button>
+        </form>
+    </div>
+
+</main>
 {% endblock %}
