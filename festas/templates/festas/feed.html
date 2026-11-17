@@ -1,0 +1,17 @@
+{% extends 'festas/base_festas.html' %}
+
+{% block festas_content %}
+    <h2>Próximas Festas</h2>
+
+    {% for festa in festas %}
+        <div class="card-festa" style="border: 2px solid var(--cerulean); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+            <h3 style="color: var(--vintage-berry);">{{ festa.nome_festa }}</h3>
+            <p><strong>Data:</strong> {{ festa.data_festa }}</p>
+            <p><strong>Lote Atual:</strong> {{ festa.lotes }}</p>
+            <button class="btn-primary">Ver Ingressos</button>
+        </div>
+    {% empty %}
+
+        <p>Ainda não há festas cadastradas.</p>
+    {% endfor %}
+{% endblock %}
