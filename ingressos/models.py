@@ -22,7 +22,7 @@ class Anuncio(models.Model):
 
     status = models.ForeignKey(Status, on_delete=models.CASCADE)
     
-    quantidade_ingressos = models.IntegerField()
+    quantidade_ingressos = models.IntegerField(default=1, verbose_name="Quantidade")
     lote = models.CharField(max_length=255)
     preco = models.FloatField()
     
