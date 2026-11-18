@@ -1,32 +1,48 @@
 # Criar página de criar anuncios, vitrine dos ingressos e meus anuncios.
+from django.shortcuts import render, redirect, HttpResponse
+from django.forms import modelformset_factory
+from .models import Anuncio
+from .forms import Etapa1Form, Etapa2Form
 
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import AnuncioForm
-
-
-#@login_required
-def criar_anuncio(request):
+def criar_etapa1(request):
     if request.method == 'POST':
-        form = AnuncioForm(request.POST)
+        form = Etapa1Form(request.POST)
         if form.is_valid():
-            anuncio = form.save(commit=False)
-            anuncio.vendedor = request.user.pessoal 
-            anuncio.status = "Disponível"
-            
-            anuncio.save() 
+            request.session['festa_id'] = form.cleaned_data['festa'].id
+            request.session['quantidade'] = form.cleaned_data['quantidade']
             
 
-            return redirect('meus_anuncios') #talvez redirecionar pra pagina com a vitrine de ingressos 
+            return redirect('criar_etapa2') 
     else:
-        form = AnuncioForm()
+        form = Etapa1Form()
+        
+    return render(request, 'ingressos/etapa1.html', {'form': form})
 
-    return render(request, 'ingressos/criar_anuncio.html', {'form': form})
+def criar_etapa2(request):
+    quantidade = request.session.get('quantidade', 1)
+    festa_id = request.session.get('festa_id')
 
-def vitrine_ingressos(request, festa_id):
-    #Colocar a logica da vitrine do site 
-    pass
 
-def meus_anuncios(request, festa_id):
-    #Colocar a logica da vitrine do site 
-    pass
+    IngressoFormSet = modelformset_factory(Anuncio, form=Etapa2Form, extra=quantidade)
+
+    if request.method == 'POST':
+        formset = IngressoFormSet(request.POST, queryset=Anuncio.objects.none())
+        
+        if formset.is_valid():
+            ingressos = formset.save(commit=False)
+            
+
+            for ingresso in ingressos:
+                ingresso.festa_id = festa_id 
+                ingresso.save() 
+                
+
+            if 'quantidade' in request.session:
+                del request.session['quantidade']
+                del request.session['festa_id']
+                
+            return HttpResponse("<h1 style='text-align: center; color: #247BA0; margin-top: 50px;'>Ingressos criados com sucesso! 🎉</h1><p style='text-align: center;'><a href='/ingressos/criar/passo1/'>Criar mais anúncios</a></p>")
+    else:
+        formset = IngressoFormSet(queryset=Anuncio.objects.none())
+
+    return render(request, 'ingressos/etapa2.html', {'formset': formset})

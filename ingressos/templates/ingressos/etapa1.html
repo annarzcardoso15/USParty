@@ -1,0 +1,57 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<style>
+
+    .caixa-formulario {
+        background-color: #fff5f7; 
+        border-radius: 15px; 
+        padding: 40px; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); 
+        max-width: 500px;
+        width: 100%;
+    }
+
+
+    .caixa-formulario p {
+        margin-bottom: 25px; 
+        display: flex;
+        flex-direction: column; 
+        align-items: center;
+        font-weight: 500;
+        color: var(--vintage-berry); 
+    }
+
+
+    .caixa-formulario input, .caixa-formulario select {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 250px;
+        margin-top: 8px; 
+        font-size: 15px;
+    }
+</style>
+
+<main style="display: flex; justify-content: center; padding-top: 60px; padding-bottom: 60px;">
+    
+
+    <div class="conteudo-festas caixa-formulario" style="text-align: center;">
+        
+        <h2 style="margin-bottom: 30px;">Passo 1: Festa e Quantidade</h2>
+        
+        <form method="POST" action="">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <br>
+            <button type="submit" class="btn-primary" style="margin-top: 10px; padding: 12px 25px; border-radius: 8px;">
+                Continuar para Lotes →
+            </button>
+        </form>
+        
+    </div>
+
+</main>
+{% endblock %}
