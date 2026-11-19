@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from ingressos.models import Anuncio
 from .forms import InteresseForm
+from .models import ManifestarInteresse
 
 # Enquanto não existe tela de login, usamos o login do admin
 @login_required(login_url='/admin/login/')
@@ -30,8 +31,13 @@ def manifestar_interesse(request, anuncio_id):
                     anuncio.status.save()
 
                 # Trocar para a Tela 12 quando ela existir
-                return redirect('feed_festas')
+                return redirect('minhas_compras')
     else:
         form = InteresseForm()
 
     return render(request, 'negociacoes/manifestar_interesse.html', {'form': form, 'anuncio': anuncio, 'erro': erro})
+
+@login_required(login_url='/admin/login/')
+def minhas_compras(request):
+    interesses = ManifestarInteresse.objects.filter(pessoal=request.user.pessoal).order_by('-id_interesse')
+    return render(request, 'negociacoes/minhas_compras.html', {'interesses': interesses})
