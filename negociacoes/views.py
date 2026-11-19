@@ -41,3 +41,8 @@ def manifestar_interesse(request, anuncio_id):
 def minhas_compras(request):
     interesses = ManifestarInteresse.objects.filter(pessoal=request.user.pessoal).order_by('-id_interesse')
     return render(request, 'negociacoes/minhas_compras.html', {'interesses': interesses})
+
+@login_required(login_url='/admin/login/')
+def interessados(request):
+    interesses = ManifestarInteresse.objects.filter(anuncio__pessoal=request.user.pessoal).order_by('-id_interesse')
+    return render(request, 'negociacoes/interessados.html', {'interesses': interesses})
