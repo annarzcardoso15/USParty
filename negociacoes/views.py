@@ -7,10 +7,21 @@ from .models import ManifestarInteresse
 # Enquanto não existe tela de login, usamos o login do admin
 @login_required(login_url='/admin/login/')
 def manifestar_interesse(request, anuncio_id):
+    # Item 3: só quem tem cadastro de pessoa pode comprar
+    if not hasattr(request.user, 'pessoal'):
+        return redirect('feed_festas')
+
     anuncio = get_object_or_404(Anuncio, pk=anuncio_id)
     erro = None
 
-    if request.method == 'POST':
+    # Item 1: USP007 exige anúncio "Disponível"
+    if not anuncio.status.disponivel:
+        erro = 'Esse anúncio não está mais disponível.'
+    # Item 2: não pode manifestar interesse no próprio anúncio
+    elif anuncio.pessoal == request.user.pessoal:
+        erro = 'Esse anúncio é seu!'
+
+    if request.method == 'POST' and erro is None:
         form = InteresseForm(request.POST)
         if form.is_valid():
             quantidade = form.cleaned_data['quantidade_desejada']
@@ -30,19 +41,24 @@ def manifestar_interesse(request, anuncio_id):
                     anuncio.status.em_negociacao = True
                     anuncio.status.save()
 
-                # Trocar para a Tela 12 quando ela existir
                 return redirect('minhas_compras')
     else:
         form = InteresseForm()
 
     return render(request, 'negociacoes/manifestar_interesse.html', {'form': form, 'anuncio': anuncio, 'erro': erro})
 
+
 @login_required(login_url='/admin/login/')
 def minhas_compras(request):
+    if not hasattr(request.user, 'pessoal'):
+        return redirect('feed_festas')
     interesses = ManifestarInteresse.objects.filter(pessoal=request.user.pessoal).order_by('-id_interesse')
     return render(request, 'negociacoes/minhas_compras.html', {'interesses': interesses})
 
+
 @login_required(login_url='/admin/login/')
 def interessados(request):
+    if not hasattr(request.user, 'pessoal'):
+        return redirect('feed_festas')
     interesses = ManifestarInteresse.objects.filter(anuncio__pessoal=request.user.pessoal).order_by('-id_interesse')
     return render(request, 'negociacoes/interessados.html', {'interesses': interesses})
