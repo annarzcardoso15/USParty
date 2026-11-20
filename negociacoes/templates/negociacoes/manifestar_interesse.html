@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 40px auto; background-color: #fff5f7; padding: 35px; border-radius: 15px;">
+    <h2 style="color: var(--vintage-berry); text-align: center;">Manifestar Interesse</h2>
+
+    <div style="background-color: white; padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <h3 style="color: var(--cerulean);">{{ anuncio.festa.nome_festa }}</h3>
+        <p><strong>Data:</strong> {{ anuncio.festa.data_festa }}</p>
+        <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
+        <p><strong>Tipo:</strong> {% if anuncio.tipo_ingresso %}Aluno USP{% else %}Não aluno{% endif %}</p>
+        <p><strong>Vendedor(a):</strong> {{ anuncio.pessoal.nome }}</p>
+        <p><strong>Disponíveis:</strong> {{ anuncio.quantidade_ingressos }}</p>
+        <p><strong>Preço:</strong> R$ {{ anuncio.preco }} por ingresso</p>
+    </div>
+
+    {% if erro %}
+        <p style="color: var(--berry-crush);">{{ erro }}</p>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary">Manifestar interesse</button>
+        <a href="{% url 'feed_festas' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

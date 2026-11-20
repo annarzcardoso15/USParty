@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 40px auto;">
+    <h2 style="color: var(--vintage-berry); text-align: center;">Interessados nos meus Ingressos</h2>
+
+    {% for interesse in interesses %}
+        <div style="background-color: white; border-left: 5px solid var(--cerulean); padding: 20px; border-radius: 10px; margin-top: 20px;">
+            <h3 style="color: var(--cerulean);">{{ interesse.pessoal.nome }}</h3>
+            <p><strong>Festa:</strong> {{ interesse.anuncio.festa.nome_festa }} ({{ interesse.anuncio.lote }})</p>
+            <p><strong>Quantidade desejada:</strong> {{ interesse.quantidade_desejada }}</p>
+            <p><strong>Valor:</strong> {% if interesse.concorda_valor %}aceitou R$ {{ interesse.anuncio.preco }}{% else %}quer negociar{% endif %}</p>
+            <p><strong>Status do anúncio:</strong> {{ interesse.anuncio.status }}</p>
+            <hr>
+            <p><strong>Telefone:</strong> {{ interesse.pessoal.telefone }}</p>
+            <a href="https://wa.me/55{{ interesse.pessoal.telefone }}" target="_blank" class="btn-primary">Chamar no WhatsApp</a>
+        </div>
+    {% empty %}
+        <p style="text-align: center;">Ninguém manifestou interesse nos seus ingressos ainda.</p>
+    {% endfor %}
+</div>
+{% endblock %}
