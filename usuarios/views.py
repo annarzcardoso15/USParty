@@ -121,7 +121,7 @@ def perfil_view(request):
         if 'adicionar_vendedor' in request.POST:
             festa_id = request.POST.get('festa_id')
             identificador = request.POST.get('identificador_vendedor', '').strip()
-            
+
             festa = perfil_instituicao.festas_organizadas.filter(idfesta=festa_id).first()
             user_alvo = User.objects.filter(email=identificador).first() or User.objects.filter(username=identificador).first()
             pessoal_alvo = Pessoal.objects.filter(usuario=user_alvo).first() if user_alvo else None
@@ -161,8 +161,14 @@ def perfil_view(request):
         em_negociacao = meus_anuncios.filter(status__em_negociacao=True)
         vendidos = meus_anuncios.filter(status__vendido=True)
 
-        valor_vendido = sum(a.preco * a.quantidade_ingressos for a in vendidos)
-        valor_ativo = sum(a.preco * a.quantidade_ingressos for a in disponiveis) + sum(a.preco * a.quantidade_ingressos for a in em_negociacao)
+        interesses_vendidos = ManifestarInteresse.objects.filter(anuncio__in=vendidos).select_related('anuncio')
+        if interesses_vendidos.exists():
+            valor_vendido = sum(i.quantidade_desejada * i.anuncio.preco for i in interesses_vendidos)
+        else:
+            valor_vendido = sum(a.preco * a.quantidade_ingressos for a in vendidos)
+
+        valor_ativo = sum(a.preco * a.quantidade_ingressos for a in disponiveis)
+        valor_negociacao = sum(a.preco * a.quantidade_ingressos for a in em_negociacao)
 
         meus_interesses = ManifestarInteresse.objects.filter(pessoal=perfil_pessoal).select_related('anuncio', 'anuncio__festa', 'anuncio__status')
         qtd_ingressos_comprados = sum(i.quantidade_desejada for i in meus_interesses)
@@ -178,6 +184,7 @@ def perfil_view(request):
                 'qtd_vendidos': vendidos.count(),
                 'valor_vendido': valor_vendido,
                 'valor_ativo': valor_ativo,
+                'valor_negociacao': valor_negociacao,
                 'total_interesses': meus_interesses.count(),
                 'qtd_ingressos_comprados': qtd_ingressos_comprados,
                 'valor_total_compras': valor_total_compras,
@@ -196,7 +203,12 @@ def perfil_view(request):
             anuncios_festa = Anuncio.objects.filter(festa=festa).select_related('status')
             vendidos_festa = anuncios_festa.filter(status__vendido=True)
             disponiveis_festa = anuncios_festa.filter(status__disponivel=True, status__vendido=False)
-            volume_festa = sum(a.preco * a.quantidade_ingressos for a in vendidos_festa)
+
+            interesses_festa = ManifestarInteresse.objects.filter(anuncio__in=vendidos_festa).select_related('anuncio')
+            if interesses_festa.exists():
+                volume_festa = sum(i.quantidade_desejada * i.anuncio.preco for i in interesses_festa)
+            else:
+                volume_festa = sum(a.preco * a.quantidade_ingressos for a in vendidos_festa)
 
             total_anuncios_inst += anuncios_festa.count()
             total_vendidos_inst += vendidos_festa.count()
@@ -226,7 +238,14 @@ def perfil_view(request):
         vendidos_geral = todos_anuncios.filter(status__vendido=True)
         disponiveis_geral = todos_anuncios.filter(status__disponivel=True, status__vendido=False, status__em_negociacao=False)
         negociacao_geral = todos_anuncios.filter(status__em_negociacao=True)
-        volume_geral = sum(a.preco * a.quantidade_ingressos for a in vendidos_geral)
+
+        interesses_vendidos_geral = ManifestarInteresse.objects.filter(anuncio__in=vendidos_geral).select_related('anuncio')
+        if interesses_vendidos_geral.exists():
+            volume_geral = sum(i.quantidade_desejada * i.anuncio.preco for i in interesses_vendidos_geral)
+        else:
+            volume_geral = sum(a.preco * a.quantidade_ingressos for a in vendidos_geral)
+
+        volume_negociacao_geral = sum(a.preco * a.quantidade_ingressos for a in negociacao_geral)
 
         contexto.update({
             'usp013': {
@@ -240,6 +259,7 @@ def perfil_view(request):
                 'anuncios_vendidos': vendidos_geral.count(),
                 'total_negociacoes': ManifestarInteresse.objects.count(),
                 'volume_transacionado': volume_geral,
+                'volume_negociacao': volume_negociacao_geral,
             }
         })
 
