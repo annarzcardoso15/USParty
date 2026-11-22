@@ -277,8 +277,12 @@
                         <td>{{ usp013.total_negociacoes }}</td>
                     </tr>
                     <tr>
-                        <td><strong>Financeiro</strong></td>
-                        <td>Volume Geral Transacionado</td>
+                        <td rowspan="2"><strong>Financeiro</strong></td>
+                        <td>Volume em Negociação</td>
+                        <td><strong style="color: var(--vintage-berry);">R$ {{ usp013.volume_negociacao|floatformat:2 }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Volume Geral Transacionado (Vendidos)</td>
                         <td><strong style="color: var(--cerulean);">R$ {{ usp013.volume_transacionado|floatformat:2 }}</strong></td>
                     </tr>
                 </tbody>
@@ -312,7 +316,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="6"><strong>Vendas</strong></td>
+                        <td rowspan="7"><strong>Vendas</strong></td>
                         <td>Total de Anúncios Criados</td>
                         <td><strong>{{ usp011.total_anuncios }}</strong></td>
                     </tr>
@@ -329,8 +333,12 @@
                         <td>{{ usp011.qtd_vendidos }}</td>
                     </tr>
                     <tr>
-                        <td>Valor em Anúncios Ativos</td>
+                        <td>Valor em Anúncios Disponíveis</td>
                         <td>R$ {{ usp011.valor_ativo|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Valor em Negociação</td>
+                        <td>R$ {{ usp011.valor_negociacao|floatformat:2 }}</td>
                     </tr>
                     <tr>
                         <td>Total Recebido em Vendas</td>
