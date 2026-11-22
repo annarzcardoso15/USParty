@@ -33,8 +33,61 @@
         justify-content: space-between;
         align-items: center;
     }
+    .tabela-resumo {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .tabela-resumo th, .tabela-resumo td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--pastel-petal);
+    }
+    .tabela-resumo th {
+        background-color: #f8f9fa;
+        color: var(--cerulean);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+    }
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+    .kpi-card {
+        background: #f8f9fa;
+        border-left: 4px solid var(--cerulean);
+        padding: 12px 15px;
+        border-radius: 6px;
+    }
+    .kpi-card.destaque {
+        border-left-color: var(--vintage-berry);
+    }
+    .kpi-valor {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #222;
+    }
+    .kpi-titulo {
+        font-size: 0.8rem;
+        color: #666;
+    }
+    .form-promover {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .form-promover input,
+    .form-promover select {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid var(--ash-grey);
+        border-radius: 6px;
+    }
     @media (max-width: 768px) {
         .perfil-grid { grid-template-columns: 1fr; }
+        .form-promover { flex-direction: column; }
     }
 </style>
 
@@ -100,19 +153,71 @@
                 <div class="dado-label">E-mail</div>
                 <div>{{ user.email }}</div>
             </div>
-            <a href="/admin/" class="btn-primary btn-verde" style="margin-top: 10px;">Acessar Painel Admin</a>
+            <a href="/admin/" class="btn-primary btn-verde" style="margin-top: 10px; display: inline-block; text-align: center; width: 100%;">Acessar Painel Django Admin</a>
         {% endif %}
 
         <div style="margin-top: 20px;">
-            <a href="{% url 'logout' %}" class="btn-primary" style="width: 100%; text-align: center;">Sair da Conta</a>
+            <a href="{% url 'logout' %}" class="btn-primary" style="width: 100%; text-align: center; display: block;">Sair da Conta</a>
         </div>
     </div>
 
-    <!-- Coluna Direita: Resumo da Conta -->
+    <!-- Coluna Direita: Totalizações (USP011, USP012, USP013) -->
     <div class="card-box">
-        <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Resumo de Anúncios</h2>
-        {% if perfil_pessoal %}
-            <p style="margin-bottom: 15px;">Total de anúncios criados: <strong>{{ meus_anuncios|length }}</strong></p>
+        {% if perfil_pessoal and usp011 %}
+            <!-- USP011: Totalização Pessoal -->
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização da Conta Pessoal</h2>
+
+            <table class="tabela-resumo">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Indicador</th>
+                        <th>Resumo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="6"><strong>Vendas</strong></td>
+                        <td>Total de Anúncios Criados</td>
+                        <td><strong>{{ usp011.total_anuncios }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Ingressos Disponíveis</td>
+                        <td>{{ usp011.qtd_disponiveis }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ingressos em Negociação</td>
+                        <td>{{ usp011.qtd_negociacao }}</td>
+                    </tr>
+                    <tr>
+                        <td>Ingressos Vendidos</td>
+                        <td>{{ usp011.qtd_vendidos }}</td>
+                    </tr>
+                    <tr>
+                        <td>Valor em Anúncios Ativos</td>
+                        <td>R$ {{ usp011.valor_ativo|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>Total Recebido em Vendas</td>
+                        <td><strong style="color: var(--cerulean);">R$ {{ usp011.valor_vendido|floatformat:2 }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="3"><strong>Compras</strong></td>
+                        <td>Negociações / Interesses Manifestados</td>
+                        <td><strong>{{ usp011.total_interesses }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Total de Ingressos Solicitados</td>
+                        <td>{{ usp011.qtd_ingressos_comprados }}</td>
+                    </tr>
+                    <tr>
+                        <td>Valor Total em Compras/Negociações</td>
+                        <td><strong style="color: var(--vintage-berry);">R$ {{ usp011.valor_total_compras|floatformat:2 }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--cerulean); margin: 20px 0 12px 0;">Meus Anúncios</h3>
             {% for anuncio in meus_anuncios %}
                 <div class="anuncio-item">
                     <div>
@@ -126,8 +231,174 @@
             {% empty %}
                 <p>Você ainda não possui ingressos anunciados.</p>
             {% endfor %}
-        {% else %}
-            <p>Bem-vindo ao painel da sua conta USParty! Use o menu superior para navegar pelas festas e negociações.</p>
+
+        {% elif perfil_instituicao and usp012 %}
+            <!-- USP012: Totalização de Atlética / Instituição -->
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização da Instituição</h2>
+
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-valor">{{ usp012.total_festas }}</div>
+                    <div class="kpi-titulo">Festas Organizadas</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-valor">{{ usp012.total_anuncios }}</div>
+                    <div class="kpi-titulo">Anúncios Vinculados</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-valor">{{ usp012.total_vendidos }}</div>
+                    <div class="kpi-titulo">Anúncios Vendidos</div>
+                </div>
+                <div class="kpi-card destaque">
+                    <div class="kpi-valor">R$ {{ usp012.receita_total|floatformat:2 }}</div>
+                    <div class="kpi-titulo">Volume Transacionado</div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--cerulean); margin-bottom: 12px;">Resumo por Festa</h3>
+            {% if usp012.resumo_festas %}
+                <table class="tabela-resumo">
+                    <thead>
+                        <tr>
+                            <th>Festa</th>
+                            <th>Data</th>
+                            <th>Disponíveis</th>
+                            <th>Vendidos</th>
+                            <th>Volume (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in usp012.resumo_festas %}
+                        <tr>
+                            <td><strong>{{ item.festa.nome_festa }}</strong></td>
+                            <td>{{ item.festa.data_festa|date:"d/m/Y" }}</td>
+                            <td>{{ item.disponiveis }}</td>
+                            <td>{{ item.vendidos }}</td>
+                            <td>R$ {{ item.volume_financeiro|floatformat:2 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Gerenciamento de Vendedores Oficiais pela Atlética -->
+                <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--pastel-petal);">
+                    <h3 style="color: var(--cerulean); margin-bottom: 8px;">Vendedores Oficiais por Festa</h3>
+                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">
+                        Vincule contas pessoais (diretoria ou comissários) como vendedores oficiais das suas festas.
+                    </p>
+
+                    <form method="POST" class="form-promover" style="margin-bottom: 20px;">
+                        {% csrf_token %}
+                        <select name="festa_id" required>
+                            {% for item in usp012.resumo_festas %}
+                                <option value="{{ item.festa.idfesta }}">{{ item.festa.nome_festa }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" name="identificador_vendedor" placeholder="Username ou e-mail do vendedor" required>
+                        <button type="submit" name="adicionar_vendedor" class="btn-primary">Adicionar Vendedor</button>
+                    </form>
+
+                    {% for item in usp012.resumo_festas %}
+                        <div style="margin-bottom: 15px; padding: 12px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>{{ item.festa.nome_festa }}:</strong>
+                            {% with vendedores=item.festa.vendedores_oficiais.all %}
+                                {% if vendedores %}
+                                    <ul style="margin: 8px 0 0 18px; padding: 0;">
+                                        {% for v in vendedores %}
+                                            <li style="margin-bottom: 4px;">
+                                                {{ v.nome }} (@{{ v.usuario.username }})
+                                                <form method="POST" style="display: inline; margin-left: 8px;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="festa_id" value="{{ item.festa.idfesta }}">
+                                                    <input type="hidden" name="vendedor_id" value="{{ v.pk }}">
+                                                    <button type="submit" name="remover_vendedor" style="background: none; border: none; color: #c62828; cursor: pointer; font-size: 0.85rem; text-decoration: underline;">
+                                                        remover
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span style="color: #777; font-size: 0.9rem;">Nenhum vendedor oficial cadastrado.</span>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Nenhuma festa vinculada a esta instituição ainda.</p>
+            {% endif %}
+
+        {% elif is_adm and usp013 %}
+            <!-- USP013: Totalização Geral (Administrador) -->
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização Geral do Sistema</h2>
+
+            <table class="tabela-resumo">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Métrica</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3"><strong>Usuários</strong></td>
+                        <td>Contas Pessoais (Alunos/Externos)</td>
+                        <td>{{ usp013.total_pessoal }}</td>
+                    </tr>
+                    <tr>
+                        <td>Instituições / Atléticas</td>
+                        <td>{{ usp013.total_instituicoes }}</td>
+                    </tr>
+                    <tr>
+                        <td>Administradores</td>
+                        <td>{{ usp013.total_admins }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventos</strong></td>
+                        <td>Festas Cadastradas</td>
+                        <td>{{ usp013.total_festas }}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="5"><strong>Ingressos & Negociações</strong></td>
+                        <td>Total de Anúncios</td>
+                        <td><strong>{{ usp013.total_anuncios }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Disponíveis</td>
+                        <td>{{ usp013.anuncios_disponiveis }}</td>
+                    </tr>
+                    <tr>
+                        <td>Em Negociação</td>
+                        <td>{{ usp013.anuncios_negociacao }}</td>
+                    </tr>
+                    <tr>
+                        <td>Vendidos</td>
+                        <td>{{ usp013.anuncios_vendidos }}</td>
+                    </tr>
+                    <tr>
+                        <td>Interesses Manifestados (Negociações)</td>
+                        <td>{{ usp013.total_negociacoes }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Financeiro</strong></td>
+                        <td>Volume Geral Transacionado</td>
+                        <td><strong style="color: var(--cerulean);">R$ {{ usp013.volume_transacionado|floatformat:2 }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Gestão de Administradores (Etapa 1) -->
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--pastel-petal);">
+                <h3 style="color: var(--cerulean); margin-bottom: 8px;">Promover Usuário a Administrador</h3>
+                <p style="font-size: 0.9rem; color: #555;">Informe o usuário ou e-mail de uma conta já cadastrada para conceder acesso administrativo:</p>
+                <form method="POST" class="form-promover">
+                    {% csrf_token %}
+                    <input type="text" name="identificador_admin" placeholder="Username ou e-mail do usuário" required>
+                    <button type="submit" name="promover_admin" class="btn-primary">Tornar Admin</button>
+                </form>
+            </div>
         {% endif %}
     </div>
 </div>
