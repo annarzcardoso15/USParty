@@ -5,21 +5,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USParty - Revenda de ingressos </title>
+    <title>USParty - Revenda de ingressos</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .messages-container {
+            max-width: 1100px;
+            margin: 0 auto 20px auto;
+        }
+        .alert {
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            border-left: 5px solid;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        }
+        .alert-success {
+            background-color: #e8f5e9;
+            color: #1b5e20;
+            border-left-color: #2e7d32;
+        }
+        .alert-error, .alert-danger {
+            background-color: #ffebee;
+            color: #b71c1c;
+            border-left-color: #c62828;
+        }
+        .alert-warning {
+            background-color: #fff8e1;
+            color: #8d6e00;
+            border-left-color: #fbc02d;
+        }
+        .alert-info {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            border-left-color: #1976d2;
+        }
+    </style>
 </head>
 
 <body>
     <nav class="navbar">
-        <div class="logo"> USParty</div>
+        <div class="logo">USParty</div>
         <div class="links">
             <a href="{% url 'feed_festas' %}">Festas</a>
             {% if user.is_authenticated %}
-                <a href="{% url 'meus_anuncios' %}">Meus Ingressos</a>
-                <a href="{% url 'minhas_compras' %}">Minhas Compras</a>
-                <a href="{% url 'interessados' %}">Interessados</a>
+                {% if user.pessoal %}
+                    <a href="{% url 'meus_anuncios' %}">Meus Ingressos</a>
+                {% elif user.adm or user.is_staff or user.is_superuser %}
+                    <a href="/festas/criar/">Criar Festa</a>
+                {% endif %}
                 <a href="{% url 'perfil' %}">Perfil ({{ user.username }})</a>
-                <a href="{% url 'logout' %}">Sair</a>
             {% else %}
                 <a href="{% url 'login' %}">Entrar</a>
                 <a href="{% url 'cadastro' %}">Cadastrar</a>
@@ -28,6 +63,16 @@
     </nav>
 
     <main style="padding: 20px;">
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         {% block content %}
         {% endblock %}
     </main>
