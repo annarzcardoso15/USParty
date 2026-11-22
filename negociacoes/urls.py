@@ -5,4 +5,5 @@ urlpatterns = [
     path('interesse/<int:anuncio_id>/', views.manifestar_interesse, name='manifestar_interesse'),
     path('minhas-compras/', views.minhas_compras, name='minhas_compras'),
     path('interessados/', views.interessados, name='interessados'),
+    path('desistir/<int:id_interesse>/', views.desistir_interesse, name='desistir_interesse'),
 ]
