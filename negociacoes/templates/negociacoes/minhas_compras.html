@@ -1,25 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div style="max-width: 650px; margin: 40px auto;">
-    <h2 style="color: var(--vintage-berry); text-align: center;">Minhas Compras</h2>
+<style>
+    .lista-negociacao { max-width: 650px; margin: 40px auto; }
+    .lista-negociacao h2 { color: var(--vintage-berry); text-align: center; margin-bottom: 10px; }
+    .card-negociacao { background-color: white; border-left: 5px solid var(--berry-crush); padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04); }
+    .card-negociacao h3 { color: var(--cerulean); margin-bottom: 8px; }
+    .card-negociacao p { margin: 4px 0; }
+    .card-negociacao hr { border: none; border-top: 1px solid #eee; margin: 12px 0; }
+    .selo-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 13px; background-color: var(--pastel-petal); color: var(--vintage-berry); }
+    .acoes-card { display: flex; gap: 15px; align-items: center; margin-top: 12px; }
+    .btn-desistir { background: none; border: none; color: var(--lavender-grey); text-decoration: underline; cursor: pointer; font-size: 14px; }
+    .vazio { text-align: center; color: var(--lavender-grey); margin-top: 30px; }
+</style>
+
+<div class="lista-negociacao">
+    <h2>Minhas Compras</h2>
 
     {% for interesse in interesses %}
-        <div style="background-color: white; border-left: 5px solid var(--berry-crush); padding: 20px; border-radius: 10px; margin-top: 20px;">
-            <h3 style="color: var(--cerulean);">{{ interesse.anuncio.festa.nome_festa }}</h3>
-            <p><strong>Data:</strong> {{ interesse.anuncio.festa.data_festa }}</p>
+        <div class="card-negociacao">
+            <h3>{{ interesse.anuncio.festa.nome_festa }}</h3>
+            <p><strong>Data:</strong> {{ interesse.anuncio.festa.data_festa|date:"d/m/Y" }}</p>
             <p><strong>Lote:</strong> {{ interesse.anuncio.lote }}</p>
             <p><strong>Quantidade:</strong> {{ interesse.quantidade_desejada }}</p>
-            <p><strong>Preço:</strong> R$ {{ interesse.anuncio.preco }} por ingresso</p>
+            <p><strong>Preço:</strong> R$ {{ interesse.anuncio.preco|floatformat:2 }} por ingresso</p>
             <p><strong>Valor:</strong> {% if interesse.concorda_valor %}aceito{% else %}a negociar{% endif %}</p>
-            <p><strong>Status:</strong> {{ interesse.anuncio.status }}</p>
+            <p><span class="selo-status">{{ interesse.anuncio.status }}</span></p>
             <hr>
             <p><strong>Vendedor(a):</strong> {{ interesse.anuncio.pessoal.nome }}</p>
             <p><strong>Telefone:</strong> {{ interesse.anuncio.pessoal.telefone }}</p>
-            <a href="https://wa.me/55{{ interesse.anuncio.pessoal.telefone }}" target="_blank" class="btn-primary">Chamar no WhatsApp</a>
+
+            <div class="acoes-card">
+                <a href="https://wa.me/55{{ interesse.anuncio.pessoal.telefone }}?text=Oi%2C%20{{ interesse.anuncio.pessoal.nome|urlencode }}!%20Vi%20seu%20ingresso%20da%20{{ interesse.anuncio.festa.nome_festa|urlencode }}%20no%20USParty%20e%20tenho%20interesse%20em%20{{ interesse.quantidade_desejada }}%20ingresso(s)." target="_blank" class="btn-primary">Chamar no WhatsApp</a>
+
+                {% if not interesse.anuncio.status.vendido %}
+                    <form method="POST" action="{% url 'desistir_interesse' interesse.id_interesse %}" onsubmit="return confirm('Tem certeza que quer desistir desse ingresso?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-desistir">Desistir</button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
     {% empty %}
-        <p style="text-align: center;">Você ainda não manifestou interesse em nenhum ingresso.</p>
+        <p class="vazio">Você ainda não manifestou interesse em nenhum ingresso.<br>
+            Dá uma olhada nas <a href="{% url 'feed_festas' %}">festas</a>!</p>
     {% endfor %}
 </div>
 {% endblock %}
