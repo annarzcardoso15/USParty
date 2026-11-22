@@ -53,7 +53,13 @@
                     <div class="detalhes-ingresso">
                         <div class="badge-festa">{{ anuncio.festa.nome_festa }}</div>
                         
-                        <h3 style="color: var(--cerulean); margin: 5px 0 10px 0;">{{ anuncio.tipo_ingresso }}</h3>
+                        <h3 style="color: var(--cerulean); margin-bottom: 10px;">
+                            {% if anuncio.tipo_ingresso %}
+                                Aluno USP
+                            {% else %}
+                                Não Aluno
+                            {% endif %}
+                        </h3>
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
                     </div>
                     
