@@ -82,7 +82,7 @@ def meus_anuncios(request):
     pessoal_teste = Pessoal.objects.first()
     
 
-    anuncios = Anuncio.objects.filter(pessoal=pessoal_teste)
+    anuncios = Anuncio.objects.filter(pessoal=request.user.pessoal)
     
     context = {
         'anuncios': anuncios

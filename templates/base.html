@@ -15,7 +15,7 @@
         <div class="links">
             <a href="{% url 'feed_festas' %}">Festas</a>
             {% if user.is_authenticated %}
-                <a href="{% url 'meus_anuncios' %}">Meus Ingressos</a>
+                <a href="{% url 'meus_anuncios' %}">Meus Anúncios</a>
                 <a href="{% url 'minhas_compras' %}">Minhas Compras</a>
                 <a href="{% url 'interessados' %}">Interessados</a>
                 <a href="{% url 'perfil' %}">Perfil ({{ user.username }})</a>
