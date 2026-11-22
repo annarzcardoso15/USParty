@@ -22,7 +22,7 @@
         <h3>{{ anuncio.festa.nome_festa }}</h3>
         <p><strong>Data:</strong> {{ anuncio.festa.data_festa|date:"d/m/Y" }}</p>
         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
-        <p><strong>Tipo:</strong> {% if anuncio.tipo_ingresso %}Aluno USP{% else %}Não aluno{% endif %}</p>
+        <p><strong>Tipo:</strong> {% if anuncio.tipo_ingresso %}Aluno USP{% else %}Não Aluno{% endif %}</p>
         <p><strong>Vendedor(a):</strong> {{ anuncio.pessoal.nome }}</p>
         <p><strong>Disponíveis:</strong> {{ anuncio.quantidade_ingressos }}</p>
         <p class="preco-destaque">R$ {{ anuncio.preco|floatformat:2 }} <small>por ingresso</small></p>
@@ -32,13 +32,19 @@
         <p class="mensagem-erro">{{ erro }}</p>
     {% endif %}
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+    {% if bloqueado %}
         <div class="botoes-form">
-            <button type="submit" class="btn-primary">Manifestar interesse</button>
-            <a href="{% url 'catalogo_ingressos' anuncio.festa.idfesta %}" class="link-cancelar">Cancelar</a>
+            <a href="{% url 'catalogo_ingressos' anuncio.festa.idfesta %}" class="btn-primary">Voltar para os ingressos</a>
         </div>
-    </form>
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="botoes-form">
+                <button type="submit" class="btn-primary">Manifestar interesse</button>
+                <a href="{% url 'catalogo_ingressos' anuncio.festa.idfesta %}" class="link-cancelar">Cancelar</a>
+            </div>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
