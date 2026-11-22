@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include 
+from festas import views as festas_views
 
 
 urlpatterns = [
+    path('', festas_views.feed_festas, name='home'),
     path('admin/', admin.site.urls),
     path('festas/', include('festas.urls')),
     path('ingressos/', include('ingressos.urls')),
