@@ -4,20 +4,20 @@ from ingressos.models import Anuncio
 from .forms import InteresseForm
 from .models import ManifestarInteresse
 
-# Enquanto não existe tela de login, usamos o login do admin
-@login_required(login_url='/admin/login/')
+
+@login_required(login_url='login')
 def manifestar_interesse(request, anuncio_id):
-    # Item 3: só quem tem cadastro de pessoa pode comprar
+    # Só quem tem cadastro de pessoa pode comprar
     if not hasattr(request.user, 'pessoal'):
         return redirect('feed_festas')
 
     anuncio = get_object_or_404(Anuncio, pk=anuncio_id)
     erro = None
 
-    # Item 1: USP007 exige anúncio "Disponível"
+    # USP007 exige anúncio "Disponível"
     if not anuncio.status.disponivel:
         erro = 'Esse anúncio não está mais disponível.'
-    # Item 2: não pode manifestar interesse no próprio anúncio
+    # Não pode manifestar interesse no próprio anúncio
     elif anuncio.pessoal == request.user.pessoal:
         erro = 'Esse anúncio é seu!'
 
@@ -48,7 +48,7 @@ def manifestar_interesse(request, anuncio_id):
     return render(request, 'negociacoes/manifestar_interesse.html', {'form': form, 'anuncio': anuncio, 'erro': erro})
 
 
-@login_required(login_url='/admin/login/')
+@login_required(login_url='login')
 def minhas_compras(request):
     if not hasattr(request.user, 'pessoal'):
         return redirect('feed_festas')
@@ -56,7 +56,7 @@ def minhas_compras(request):
     return render(request, 'negociacoes/minhas_compras.html', {'interesses': interesses})
 
 
-@login_required(login_url='/admin/login/')
+@login_required(login_url='login')
 def interessados(request):
     if not hasattr(request.user, 'pessoal'):
         return redirect('feed_festas')
