@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .perfil-grid {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 25px;
+    }
+    .card-box {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .dado-item {
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--pastel-petal);
+    }
+    .dado-label {
+        font-size: 0.8rem;
+        color: var(--lavender-grey);
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .anuncio-item {
+        padding: 15px;
+        border: 1px solid var(--ash-grey);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    @media (max-width: 768px) {
+        .perfil-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="header-festas">
+    <h1>Meu Perfil</h1>
+    <p>Gerencie seus dados cadastrais e acompanhe o resumo da sua conta.</p>
+</div>
+
+<div class="perfil-grid">
+    <!-- Coluna Esquerda: Dados Básicos -->
+    <div class="card-box">
+        {% if perfil_pessoal %}
+            <h2 style="color: var(--cerulean); margin-bottom: 15px;">{{ perfil_pessoal.nome }}</h2>
+            <div class="dado-item">
+                <div class="dado-label">Tipo de Conta</div>
+                <div>Aluno / Pessoal ({{ perfil_pessoal.instituicao }})</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">Usuário</div>
+                <div>@{{ user.username }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">E-mail</div>
+                <div>{{ user.email }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">Telefone</div>
+                <div>{{ perfil_pessoal.telefone }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">CPF</div>
+                <div>{{ perfil_pessoal.cpf }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">Data de Nascimento</div>
+                <div>{{ perfil_pessoal.data_nascimento|date:"d/m/Y" }}</div>
+            </div>
+        {% elif perfil_instituicao %}
+            <h2 style="color: var(--cerulean); margin-bottom: 15px;">{{ perfil_instituicao.nome }}</h2>
+            <div class="dado-item">
+                <div class="dado-label">Tipo de Conta</div>
+                <div>Atlética / Centro Acadêmico</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">E-mail</div>
+                <div>{{ user.email }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">CNPJ</div>
+                <div>{{ perfil_instituicao.cnpj }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">Telefone</div>
+                <div>{{ perfil_instituicao.telefone }}</div>
+            </div>
+        {% elif is_adm %}
+            <h2 style="color: var(--cerulean); margin-bottom: 15px;">Administrador</h2>
+            <div class="dado-item">
+                <div class="dado-label">Usuário</div>
+                <div>{{ user.username }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">E-mail</div>
+                <div>{{ user.email }}</div>
+            </div>
+            <a href="/admin/" class="btn-primary btn-verde" style="margin-top: 10px;">Acessar Painel Admin</a>
+        {% endif %}
+
+        <div style="margin-top: 20px;">
+            <a href="{% url 'logout' %}" class="btn-primary" style="width: 100%; text-align: center;">Sair da Conta</a>
+        </div>
+    </div>
+
+    <!-- Coluna Direita: Resumo da Conta -->
+    <div class="card-box">
+        <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Resumo de Anúncios</h2>
+        {% if perfil_pessoal %}
+            <p style="margin-bottom: 15px;">Total de anúncios criados: <strong>{{ meus_anuncios|length }}</strong></p>
+            {% for anuncio in meus_anuncios %}
+                <div class="anuncio-item">
+                    <div>
+                        <strong>{{ anuncio.festa.nome_festa }}</strong> — {{ anuncio.lote }}<br>
+                        <small>Quantidade: {{ anuncio.quantidade_ingressos }} | Status: {{ anuncio.status }}</small>
+                    </div>
+                    <div style="font-weight: bold; color: var(--cerulean);">
+                        R$ {{ anuncio.preco|floatformat:2 }}
+                    </div>
+                </div>
+            {% empty %}
+                <p>Você ainda não possui ingressos anunciados.</p>
+            {% endfor %}
+        {% else %}
+            <p>Bem-vindo ao painel da sua conta USParty! Use o menu superior para navegar pelas festas e negociações.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
