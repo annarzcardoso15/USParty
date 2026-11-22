@@ -3,24 +3,56 @@
 {% block festas_content %}
     <h2>Próximas Festas</h2>
 
-    <div class="grid-festas">
-        {% for festa in festas %}
-            <div class="card-festa">
-                {% if festa.imagem %}
-                    <img src="{{ festa.imagem }}" alt="{{ festa.nome_festa }}" class="card-img">
-                {% else %}
-                    <div class="card-img-placeholder">Sem imagem</div>
-                {% endif %}
+    <div class="feed-layout">
+        <div class="grid-festas">
+            {% for festa in festas %}
+                <div class="card-festa">
+                    {% if festa.imagem %}
+                        <img src="{{ festa.imagem }}" alt="{{ festa.nome_festa }}" class="card-img">
+                    {% else %}
+                        <div class="card-img-placeholder">Sem imagem</div>
+                    {% endif %}
 
-                <div class="card-body">
-                    <h3>{{ festa.nome_festa }}</h3>
-                    <p><strong>Data:</strong> {{ festa.data_festa }}</p>
-                    <p><strong>Lote Atual:</strong> {{ festa.lotes }}</p>
-                    <a href="{% url 'detalhes_festa' festa.idfesta %}" class="btn-primary">Ver Detalhes</a>
+                    <div class="card-body">
+                        <h3>{{ festa.nome_festa }}</h3>
+                        <p><strong>Data:</strong> {{ festa.data_festa }}</p>
+                        <p><strong>Lote:</strong> {{ festa.lotes }}</p>
+                        <a href="{% url 'detalhes_festa' festa.idfesta %}" class="btn-primary">Ver Detalhes</a>
+                    </div>
                 </div>
-            </div>
-        {% empty %}
-            <p>Ainda não há festas cadastradas.</p>
-        {% endfor %}
+            {% empty %}
+                <p>Ainda não há festas cadastradas.</p>
+            {% endfor %}
+        </div>
+
+
+        <aside class="calendario-widget">
+            <h3 class="calendario-titulo">Calendário ({{ mes_ano }})</h3>
+            <table class="tabela-calendario">
+                <thead>
+                    <tr>
+                        <th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for semana in semanas %}
+                        <tr>
+                            {% for celula in semana %}
+                                <td class="{% if celula.festas %}dia-com-festa{% endif %}">
+                                    {% if celula.dia != 0 %}
+                                        <span class="numero-dia">{{ celula.dia }}</span>
+                                        {% for festa in celula.festas %}
+                                            <a href="{% url 'detalhes_festa' festa.idfesta %}" class="link-festa-cal" title="{{ festa.nome_festa }}">
+                                                {{ festa.nome_festa|truncatechars:10 }}
+                                            </a>
+                                        {% endfor %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </aside>
     </div>
 {% endblock %}
