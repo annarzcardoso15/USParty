@@ -25,10 +25,10 @@ class Etapa2Form(forms.ModelForm):
             'tipo_ingresso': 'Tipo de Ingresso'
         }
         widgets = {
-            'preco': forms.NumberInput(attrs={'step': '0.01'}),
-            'tipo_ingresso': forms.Select(choices=[
-                ('Aluno USP', 'Aluno USP'),
-                ('Não Aluno', 'Não Aluno')
-            ]),
+                    'preco': forms.NumberInput(attrs={'step': '0.01'}),
+                    'tipo_ingresso': forms.Select(choices=[
+                        (True, 'Aluno USP'),
+                        (False, 'Não Aluno')
+                    ]),
         }
         
