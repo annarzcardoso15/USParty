@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="max-width: 440px; margin: 40px auto; background: white; padding: 32px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center;">
+    <h2 style="color: var(--cerulean); margin-top: 0;">Senha alterada com sucesso!</h2>
+    <p style="color: #555; margin-bottom: 25px;">
+        Sua senha foi redefinida. Você já pode acessar sua conta normalmente.
+    </p>
+    <a href="{% url 'login' %}" class="btn-primary" style="display: inline-block;">Entrar no USParty</a>
+</div>
+{% endblock %}

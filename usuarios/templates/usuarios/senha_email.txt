@@ -1,0 +1,6 @@
+Olá! Recebemos um pedido para trocar a senha da sua conta no USParty.
+
+Para criar uma senha nova, acesse o link abaixo:
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+Se não foi você quem solicitou, é só ignorar este e-mail.
