@@ -5,6 +5,7 @@ from .models import Anuncio, Festa, Pessoal
 from .forms import Etapa1Form, Etapa2Form
 from django.forms import formset_factory
 from django.contrib.auth import get_user_model
+from .models import Anuncio, Festa, Status
 
 def criar_etapa1(request):
     if request.method == 'POST':
@@ -35,12 +36,16 @@ def criar_etapa2(request):
             festa = get_object_or_404(Festa, idfesta=festa_id)
             
 
-            User = get_user_model()
-            usuario_teste, criado = User.objects.get_or_create(
-                username='vendedor_teste',
-                defaults={'email': 'vendedor@teste.com'}
-            )
+            pessoal_teste = Pessoal.objects.first()
+            status_teste = Status.objects.first()
 
+            
+        if formset.is_valid():
+            festa_id = request.session.get('festa_id')
+            festa = get_object_or_404(Festa, idfesta=festa_id)
+            
+
+            pessoal_teste = Pessoal.objects.first()
             
             for form in formset:
                 if form.has_changed():
@@ -48,7 +53,8 @@ def criar_etapa2(request):
                     anuncio.festa = festa
                     
 
-                    anuncio.pessoal = usuario_teste 
+                    anuncio.pessoal = pessoal_teste 
+                    anuncio.status = status_teste
                     
                     anuncio.save()
             
@@ -76,3 +82,14 @@ def catalogo_ingressos(request, festa_id):
     }
 
     return render(request, 'ingressos/catalogo_ingressos.html', context)
+
+def meus_anuncios(request):
+    pessoal_teste = Pessoal.objects.first()
+    
+
+    anuncios = Anuncio.objects.filter(pessoal=pessoal_teste)
+    
+    context = {
+        'anuncios': anuncios
+    }
+    return render(request, 'ingressos/meus_anuncios.html', context)

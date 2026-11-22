@@ -2,6 +2,7 @@ from django.db import models
 from usuarios.models import Pessoal
 from festas.models import Festa
 
+
 class Status(models.Model):
     id_status = models.AutoField(primary_key=True)
     disponivel = models.BooleanField(default=True)
