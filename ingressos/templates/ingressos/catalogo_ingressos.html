@@ -43,8 +43,12 @@
         
         {% if anuncios %}
             
+
+            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%;">
+
             {% for anuncio in anuncios %}
                 <div class="caixa-anuncio">
+                    
                     <div class="detalhes-ingresso">
                         <h3 style="color: var(--cerulean); margin: 5px 0 10px 0;">
                             {% if anuncio.tipo_ingresso %}
@@ -54,6 +58,7 @@
                             {% endif %}
                         </h3>
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
+                        
                         <div style="margin-top: 10px; display: flex; align-items: center;">
                             <p style="margin: 0;"><strong>Vendedor:</strong> {{ anuncio.pessoal.user.username }}</p>
     
@@ -62,7 +67,8 @@
                                     ★ Vendedor Oficial
                                 </span>
                             {% endif %}
-                    </div>
+                        </div> <!-- Fecha a linha do Vendedor -->
+                    </div> <!-- Fecha os detalhes-ingresso -->
                     
                     <div style="text-align: right;">
                         <p style="margin-bottom: 5px; font-size: 14px; color: #888;">Valor:</p>
@@ -70,9 +76,13 @@
                         <a href="{% url 'manifestar_interesse' anuncio.id_anuncio %}" class="btn-primary" style="margin-top: 15px; padding: 8px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">
                             Comprar
                         </a>
-                    </div>
-                </div>
+                    </div> 
+
+                </div> 
+            
             {% endfor %}
+
+            </div>
 
         {% else %}
             <div style="text-align: center; padding: 40px; background-color: #fff5f7; border-radius: 12px;">
