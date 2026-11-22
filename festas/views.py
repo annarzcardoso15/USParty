@@ -3,15 +3,40 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .models import Festa
 from .forms import FestaForm
+import calendar
+from datetime import date
+
+
 
 def feed_festas(request):
+    festas_cadastradas = Festa.objects.all().order_by('data_festa')
 
-    festas_cadastradas = Festa.objects.all()
-    contexto = {
-        'festas': festas_cadastradas
-    }
-    
-    return render(request, 'festas/feed.html', contexto)
+    hoje = date.today()
+    ano, mes = hoje.year, hoje.month
+
+    festas_mes = festas_cadastradas.filter(data_festa__year=ano, data_festa__month=mes)
+    festas_por_dia = {}
+    for festa in festas_mes:
+        dia = festa.data_festa.day
+        festas_por_dia.setdefault(dia, []).append(festa)
+
+   
+    cal = calendar.Calendar(firstweekday=6)
+    semanas = []
+    for semana in cal.monthdayscalendar(ano, mes):
+        linha = []
+        for dia in semana:
+            linha.append({
+                'dia': dia,
+                'festas': festas_por_dia.get(dia, [])
+            })
+        semanas.append(linha)
+
+    return render(request, 'festas/feed.html', {
+        'festas': festas_cadastradas,
+        'semanas': semanas,
+        'mes_ano': hoje.strftime('%m/%Y'),
+    })
 
 @login_required
 def criar_festa(request):
@@ -46,3 +71,4 @@ def detalhes_festa(request, idfesta):
     festa_especifica = get_object_or_404(Festa, pk=idfesta)
     
     return render(request, 'festas/detalhes_festa.html', {'festa': festa_especifica})
+
