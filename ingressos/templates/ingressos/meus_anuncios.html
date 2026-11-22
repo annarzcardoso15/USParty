@@ -1,0 +1,82 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+<style>
+    .caixa-anuncio {
+        border: 1px solid #e0e0e0;
+        padding: 25px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .detalhes-ingresso p {
+        margin: 5px 0;
+        color: #555;
+    }
+
+    .preco-destaque {
+        font-size: 24px;
+        font-weight: bold;
+        color: var(--vintage-berry);
+    }
+    
+    .badge-festa {
+        background-color: var(--cerulean);
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+</style>
+
+<main style="display: flex; justify-content: center; padding-top: 60px; padding-bottom: 60px;">
+    
+    <div style="width: 100%; max-width: 800px;">
+        
+        <h1 style="text-align: center; margin-bottom: 40px; color: var(--cerulean);">
+            Meus Anúncios
+        </h1>
+        
+        {% if anuncios %}
+            
+            {% for anuncio in anuncios %}
+                <div class="caixa-anuncio">
+                    <div class="detalhes-ingresso">
+                        <div class="badge-festa">{{ anuncio.festa.nome_festa }}</div>
+                        
+                        <h3 style="color: var(--cerulean); margin: 5px 0 10px 0;">{{ anuncio.tipo_ingresso }}</h3>
+                        <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <p style="margin-bottom: 5px; font-size: 14px; color: #888;">Valor Anunciado:</p>
+                        <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
+                        <p style="margin-top: 15px; font-size: 13px; color: #28a745; font-weight: bold;">
+                            ✓ Ativo na Vitrine
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <div style="text-align: center; padding: 40px; background-color: #fff5f7; border-radius: 12px;">
+                <h3 style="color: var(--vintage-berry);">Você ainda não tem ingressos anunciados!</h3>
+                <p style="margin-top: 15px;">Quando criar um anúncio, ele aparecerá aqui.</p>
+                <br>
+                <a href="{% url 'criar_etapa1' %}" class="btn-primary" style="padding: 10px 20px; border-radius: 6px; text-decoration: none;">Anunciar Ingresso</a>
+            </div>
+        {% endif %}
+
+    </div>
+
+</main>
+{% endblock %}

@@ -1,15 +1,23 @@
 # Criar página de criar anuncios, vitrine dos ingressos e meus anuncios.
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.forms import modelformset_factory
-from .models import Anuncio
+from .models import Anuncio, Festa, Pessoal
 from .forms import Etapa1Form, Etapa2Form
+from django.forms import formset_factory
+from django.contrib.auth import get_user_model
+from .models import Anuncio, Festa, Status
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 def criar_etapa1(request):
     if request.method == 'POST':
         form = Etapa1Form(request.POST)
         if form.is_valid():
-            request.session['festa_id'] = form.cleaned_data['festa'].id
-            request.session['quantidade'] = form.cleaned_data['quantidade']
+            festa_selecionada = form.cleaned_data['festa']
+            quantidade = form.cleaned_data['quantidade']
+
+            request.session['festa_id'] = festa_selecionada.idfesta
+            request.session['quantidade_ingressos'] = quantidade
             
 
             return redirect('criar_etapa2') 
@@ -18,31 +26,73 @@ def criar_etapa1(request):
         
     return render(request, 'ingressos/etapa1.html', {'form': form})
 
+@login_required(login_url='login')
 def criar_etapa2(request):
-    quantidade = request.session.get('quantidade', 1)
-    festa_id = request.session.get('festa_id')
-
-
-    IngressoFormSet = modelformset_factory(Anuncio, form=Etapa2Form, extra=quantidade)
-
+    quantidade = request.session.get('quantidade_ingressos', 1)
+    
+    AnuncioFormSet = formset_factory(Etapa2Form, extra=quantidade)
+    
     if request.method == 'POST':
-        formset = IngressoFormSet(request.POST, queryset=Anuncio.objects.none())
-        
+        formset = AnuncioFormSet(request.POST)
         if formset.is_valid():
-            ingressos = formset.save(commit=False)
+            festa_id = request.session.get('festa_id')
+            festa = get_object_or_404(Festa, idfesta=festa_id)
             
 
-            for ingresso in ingressos:
-                ingresso.festa_id = festa_id 
-                ingresso.save() 
-                
+            pessoal_teste = Pessoal.objects.first()
+            status_teste = Status.objects.first()
 
-            if 'quantidade' in request.session:
-                del request.session['quantidade']
+            
+        if formset.is_valid():
+            festa_id = request.session.get('festa_id')
+            festa = get_object_or_404(Festa, idfesta=festa_id)
+            
+
+            anuncio.pessoal = request.user.pessoal
+            
+            for form in formset:
+                if form.has_changed():
+                    anuncio = form.save(commit=False)
+                    anuncio.festa = festa
+                    
+
+                    anuncio.pessoal = pessoal_teste 
+                    anuncio.status = status_teste
+                    
+                    anuncio.save()
+            
+
+            if 'festa_id' in request.session:
                 del request.session['festa_id']
+            if 'quantidade_ingressos' in request.session:
+                del request.session['quantidade_ingressos']
                 
-            return HttpResponse("<h1 style='text-align: center; color: #247BA0; margin-top: 50px;'>Ingressos criados com sucesso! 🎉</h1><p style='text-align: center;'><a href='/ingressos/criar/passo1/'>Criar mais anúncios</a></p>")
+            return redirect('catalogo_ingressos', festa_id=festa_id)
+            
     else:
-        formset = IngressoFormSet(queryset=Anuncio.objects.none())
+        formset = AnuncioFormSet()
 
     return render(request, 'ingressos/etapa2.html', {'formset': formset})
+
+def catalogo_ingressos(request, festa_id):
+    festa = get_object_or_404(Festa, idfesta=festa_id)
+    
+    anuncios = Anuncio.objects.filter(festa=festa, status__disponivel=True)
+    
+    context = {
+        'festa': festa,
+        'anuncios': anuncios
+    }
+
+    return render(request, 'ingressos/catalogo_ingressos.html', context)
+
+def meus_anuncios(request):
+    pessoal_teste = Pessoal.objects.first()
+    
+
+    anuncios = Anuncio.objects.filter(pessoal=pessoal_teste)
+    
+    context = {
+        'anuncios': anuncios
+    }
+    return render(request, 'ingressos/meus_anuncios.html', context)
