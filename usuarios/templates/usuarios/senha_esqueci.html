@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auth-card {
+        max-width: 440px;
+        margin: 40px auto;
+        background: white;
+        padding: 32px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .auth-card h2 {
+        color: var(--cerulean);
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    .auth-card p {
+        color: #555;
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+    }
+    .auth-card form p {
+        margin-bottom: 15px;
+    }
+    .auth-card label {
+        display: block;
+        font-weight: bold;
+        font-size: 0.85rem;
+        color: var(--vintage-berry);
+        margin-bottom: 5px;
+    }
+    .auth-card input[type="email"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--ash-grey);
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+</style>
+
+<div class="auth-card">
+    <h2>Esqueci minha senha</h2>
+    <p>Digite o e-mail cadastrado na sua conta e enviaremos um link para criar uma nova senha.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Enviar link de recuperação</button>
+    </form>
+
+    <div style="margin-top: 18px; text-align: center; font-size: 0.9rem;">
+        <a href="{% url 'login' %}" style="color: var(--cerulean);">Voltar para o Login</a>
+    </div>
+</div>
+{% endblock %}

@@ -23,15 +23,8 @@
         padding: 10px;
         border: 1px solid var(--lavender-grey);
         border-radius: 5px;
+        box-sizing: border-box;
     }
-    .alerta {
-        padding: 12px;
-        border-radius: 5px;
-        margin-bottom: 15px;
-        font-weight: 600;
-    }
-    .alerta-erro { background: #fadbd8; color: #922b21; }
-    .alerta-sucesso { background: #d4efdf; color: #1e8449; }
 </style>
 
 <div class="auth-card">
@@ -40,26 +33,22 @@
         <p>Acesse sua conta para anunciar ou comprar ingressos.</p>
     </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alerta {% if message.tags == 'error' %}alerta-erro{% else %}alerta-sucesso{% endif %}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
     <form method="POST">
         {% csrf_token %}
         <div class="form-grupo">
             <label for="id_identificador">E-mail ou Nome de Usuário</label>
             <input type="text" name="identificador" id="id_identificador" value="{{ form.identificador.value|default:'' }}" required>
         </div>
-        <div class="form-grupo">
+        <div class="form-grupo" style="margin-bottom: 8px;">
             <label for="id_senha">Senha</label>
             <input type="password" name="senha" id="id_senha" required>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <div style="text-align: right; margin-bottom: 18px;">
+            <a href="{% url 'password_reset' %}" style="color: var(--cerulean); font-size: 0.9rem;">Esqueci minha senha</a>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
             <button type="submit" class="btn-primary" style="flex: 1;">Entrar</button>
             <a href="{% url 'feed_festas' %}" class="btn-primary btn-verde">Cancelar</a>
         </div>

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auth-card {
+        max-width: 440px;
+        margin: 40px auto;
+        background: white;
+        padding: 32px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .auth-card h2 {
+        color: var(--cerulean);
+        margin-top: 0;
+        margin-bottom: 12px;
+    }
+    .auth-card label {
+        display: block;
+        font-weight: bold;
+        font-size: 0.85rem;
+        color: var(--vintage-berry);
+        margin-bottom: 5px;
+    }
+    .auth-card input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--ash-grey);
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+    .auth-card .helptext, .auth-card ul {
+        font-size: 0.8rem;
+        color: #666;
+        padding-left: 18px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="auth-card">
+    {% if validlink %}
+        <h2>Criar nova senha</h2>
+        <p style="color: #555; font-size: 0.95rem; margin-bottom: 20px;">
+            Digite e confirme sua nova senha abaixo.
+        </p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">Salvar nova senha</button>
+        </form>
+    {% else %}
+        <h2 style="color: #c62828;">Link inválido ou expirado</h2>
+        <p style="color: #555; margin-bottom: 20px;">
+            Esse link de recuperação já foi utilizado ou expirou.
+        </p>
+        <a href="{% url 'password_reset' %}" class="btn-primary" style="display: inline-block;">Solicitar novo link</a>
+    {% endif %}
+</div>
+{% endblock %}
