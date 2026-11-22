@@ -9,6 +9,7 @@
     .card-negociacao p { margin: 4px 0; }
     .card-negociacao hr { border: none; border-top: 1px solid #eee; margin: 12px 0; }
     .selo-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 13px; background-color: var(--pastel-petal); color: var(--vintage-berry); }
+    .acoes-card { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; margin-top: 12px; }
     .vazio { text-align: center; color: var(--lavender-grey); margin-top: 30px; }
 </style>
 
@@ -24,7 +25,11 @@
             <p><span class="selo-status">{{ interesse.anuncio.status }}</span></p>
             <hr>
             <p><strong>Telefone:</strong> {{ interesse.pessoal.telefone }}</p>
-            <a href="https://wa.me/55{{ interesse.pessoal.telefone }}?text=Oi%2C%20{{ interesse.pessoal.nome|urlencode }}!%20Vi%20que%20voc%C3%AA%20se%20interessou%20pelo%20meu%20ingresso%20da%20{{ interesse.anuncio.festa.nome_festa|urlencode }}%20no%20USParty." target="_blank" class="btn-primary" style="display: inline-block; margin-top: 12px;">Chamar no WhatsApp</a>
+
+            <div class="acoes-card">
+                <a href="https://wa.me/55{{ interesse.pessoal.telefone }}?text=Oi%2C%20{{ interesse.pessoal.nome|urlencode }}!%20Vi%20que%20voc%C3%AA%20se%20interessou%20pelo%20meu%20ingresso%20da%20{{ interesse.anuncio.festa.nome_festa|urlencode }}%20no%20USParty." target="_blank" class="btn-primary">Chamar no WhatsApp</a>
+                <a href="{% url 'editar_anuncio' interesse.anuncio.id_anuncio %}" class="btn-primary btn-verde">Atualizar status do anúncio</a>
+            </div>
         </div>
     {% empty %}
         <p class="vazio">Ninguém manifestou interesse nos seus ingressos ainda.</p>
