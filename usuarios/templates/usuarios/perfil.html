@@ -2,6 +2,30 @@
 
 {% block content %}
 <style>
+    .perfil-header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-bottom: 18px;
+        margin-bottom: 25px;
+        border-bottom: 2px solid var(--ash-grey);
+    }
+    .perfil-header-bar h1 {
+        color: var(--cerulean);
+        margin: 0 0 5px 0;
+        font-size: 2rem;
+    }
+    .perfil-header-bar p {
+        color: var(--vintage-berry);
+        margin: 0;
+    }
+    .perfil-topo-acoes {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
     .perfil-grid {
         display: grid;
         grid-template-columns: 320px 1fr;
@@ -91,9 +115,18 @@
     }
 </style>
 
-<div class="header-festas">
-    <h1>Meu Perfil</h1>
-    <p>Gerencie seus dados cadastrais e acompanhe o resumo da sua conta.</p>
+<div class="perfil-header-bar">
+    <div>
+        <h1>Meu Perfil</h1>
+        <p>Gerencie seus dados cadastrais e acompanhe o resumo da sua conta.</p>
+    </div>
+
+    {% if perfil_pessoal %}
+        <div class="perfil-topo-acoes">
+            <a href="{% url 'minhas_compras' %}" class="btn-primary">Minhas Compras</a>
+            <a href="{% url 'interessados' %}" class="btn-primary">Interessados</a>
+        </div>
+    {% endif %}
 </div>
 
 <div class="perfil-grid">
@@ -125,6 +158,16 @@
                 <div class="dado-label">Data de Nascimento</div>
                 <div>{{ perfil_pessoal.data_nascimento|date:"d/m/Y" }}</div>
             </div>
+            {% if perfil_pessoal.festas_oficiais.all %}
+                <div class="dado-item">
+                    <div class="dado-label">Vendedor Oficial em</div>
+                    <div>
+                        {% for festa in perfil_pessoal.festas_oficiais.all %}
+                            ★ {{ festa.nome_festa }}{% if not forloop.last %}<br>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         {% elif perfil_instituicao %}
             <h2 style="color: var(--cerulean); margin-bottom: 15px;">{{ perfil_instituicao.nome }}</h2>
             <div class="dado-item">
@@ -389,7 +432,7 @@
                 </tbody>
             </table>
 
-            <!-- Gestão de Administradores (Etapa 1) -->
+            <!-- Gestão de Administradores -->
             <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--pastel-petal);">
                 <h3 style="color: var(--cerulean); margin-bottom: 8px;">Promover Usuário a Administrador</h3>
                 <p style="font-size: 0.9rem; color: #555;">Informe o usuário ou e-mail de uma conta já cadastrada para conceder acesso administrativo:</p>
