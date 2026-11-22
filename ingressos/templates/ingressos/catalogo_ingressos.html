@@ -31,17 +31,37 @@
     <div style="width: 100%; max-width: 800px;">
         
 
-        <h1 style="text-align: center; margin-bottom: 40px; color: var(--cerulean);">
-            Ingressos para: {{ festa.nome_festa }}
-        </h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h1 style="color: var(--cerulean); margin: 0;">
+                Ingressos para: {{ festa.nome_festa }}
+            </h1>
+            
+            <a href="{% url 'criar_etapa1' %}" class="btn-primary" style="padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                + Vender Ingresso
+            </a>
+        </div>
         
         {% if anuncios %}
             
             {% for anuncio in anuncios %}
                 <div class="caixa-anuncio">
                     <div class="detalhes-ingresso">
-                        <h3 style="color: var(--cerulean); margin-bottom: 10px;">{{ anuncio.tipo_ingresso }}</h3>
+                        <h3 style="color: var(--cerulean); margin: 5px 0 10px 0;">
+                            {% if anuncio.tipo_ingresso %}
+                                Aluno USP
+                            {% else %}
+                                Não Aluno
+                            {% endif %}
+                        </h3>
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
+                        <div style="margin-top: 10px; display: flex; align-items: center;">
+                            <p style="margin: 0;"><strong>Vendedor:</strong> {{ anuncio.pessoal.user.username }}</p>
+    
+                            {% if anuncio.pessoal in anuncio.festa.vendedores_oficiais.all %}
+                                <span style="background: #2e7d32; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">
+                                    ★ Vendedor Oficial
+                                </span>
+                            {% endif %}
                     </div>
                     
                     <div style="text-align: right;">
@@ -58,8 +78,7 @@
             <div style="text-align: center; padding: 40px; background-color: #fff5f7; border-radius: 12px;">
                 <h3 style="color: var(--vintage-berry);">Ainda não há ingressos à venda para esta festa!</h3>
                 <p style="margin-top: 15px;">Seja o primeiro a anunciar.</p>
-                <br>
-                <a href="{% url 'criar_etapa1' %}" class="btn-primary" style="padding: 10px 20px; border-radius: 6px; text-decoration: none;">Anunciar Ingresso</a>
+                
             </div>
         {% endif %}
 
