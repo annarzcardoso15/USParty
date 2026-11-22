@@ -68,7 +68,7 @@ def criar_etapa2(request):
 def catalogo_ingressos(request, festa_id):
     festa = get_object_or_404(Festa, idfesta=festa_id)
     
-    anuncios = Anuncio.objects.filter(festa=festa, status__disponivel=True)
+    anuncios = Anuncio.objects.filter(festa=festa).order_by('-status__disponivel', '-status__em_negociacao')
     
     context = {
         'festa': festa,
@@ -77,6 +77,7 @@ def catalogo_ingressos(request, festa_id):
 
     return render(request, 'ingressos/catalogo_ingressos.html', context)
 
+@login_required(login_url='login')
 def meus_anuncios(request):
     pessoal_teste = Pessoal.objects.first()
     
@@ -87,16 +88,41 @@ def meus_anuncios(request):
         'anuncios': anuncios
     }
     return render(request, 'ingressos/meus_anuncios.html', context)
+
 @login_required(login_url='login')
-def editar_preco(request, id_anuncio):
-    # Busca o anúncio garantindo que pertence ao utilizador logado
+def editar_anuncio(request, id_anuncio):
+    # Puxa o anúncio garantindo que é do utilizador
     anuncio = get_object_or_404(Anuncio, id_anuncio=id_anuncio, pessoal=request.user.pessoal)
+    
     if request.method == 'POST':
+        # Salva o novo preço
         novo_preco = request.POST.get('preco')
         if novo_preco:
             anuncio.preco = novo_preco
-            anuncio.save()
-    return redirect('meus_anuncios')
+        
+        # Salva o novo status
+        novo_status = request.POST.get('status_escolhido')
+        status = anuncio.status
+        if novo_status == 'disponivel':
+            status.disponivel = True
+            status.em_negociacao = False
+            status.vendido = False
+        elif novo_status == 'em_negociacao':
+            status.disponivel = False
+            status.em_negociacao = True
+            status.vendido = False
+        elif novo_status == 'vendido':
+            status.disponivel = False
+            status.em_negociacao = False
+            status.vendido = True
+            
+        status.save()
+        anuncio.save()
+        
+        # Redireciona de volta para a lista
+        return redirect('meus_anuncios')
+        
+    return render(request, 'ingressos/editar_anuncio.html', {'anuncio': anuncio})
 
 @login_required(login_url='login')
 def atualizar_status(request, id_anuncio):

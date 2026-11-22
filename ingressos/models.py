@@ -27,7 +27,7 @@ class Anuncio(models.Model):
     lote = models.CharField(max_length=255)
     preco = models.FloatField()
     
-    tipo_ingresso = models.BooleanField(help_text="Marque se for aluno usp, desmarque se for nao aluno")
+    tipo_ingresso = models.BooleanField(help_text=None)
 
     def __str__(self):
         return f"Ingresso {self.festa.nome_festa} - {self.pessoal.nome}"

@@ -57,35 +57,27 @@
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
                     </div>
                     
-                    <div style="text-align: right; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
-                        
-                        
-                        <form action="{% url 'editar_preco' anuncio.id_anuncio %}" method="POST" style="display: flex; gap: 5px; align-items: center;">
-                            {% csrf_token %}
-                            <label style="font-size: 14px; color: #888;">R$</label>
-                            <input type="number" step="0.01" name="preco" value="{{ anuncio.preco }}" style="width: 80px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
-                            <button type="submit" class="btn-primary" style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer;">Salvar</button>
-                        </form>
+                <div style="text-align: right; display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                    <p style="margin-bottom: 2px; font-size: 14px; color: #888;">Valor Anunciado:</p>
+                    <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
+                    
+                    <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; {% if anuncio.status.disponivel %}color: #28a745;{% elif anuncio.status.em_negociacao %}color: #ffc107;{% else %}color: #dc3545;{% endif %}">
+                            {% if anuncio.status.disponivel %}🟢 Disponível
+                            {% elif anuncio.status.em_negociacao %}🟡 Em Negociação
+                            {% else %}🔴 Vendido{% endif %}
+                        </p>
 
-                        
-                        <form action="{% url 'atualizar_status' anuncio.id_anuncio %}" method="POST">
-                            {% csrf_token %}
-                            <select name="status_escolhido" onchange="this.form.submit()" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px;">
-                                <option value="disponivel" {% if anuncio.status.disponivel %}selected{% endif %}>🟢 Disponível</option>
-                                <option value="em_negociacao" {% if anuncio.status.em_negociacao %}selected{% endif %}>🟡 Em Negociação</option>
-                                <option value="vendido" {% if anuncio.status.vendido %}selected{% endif %}>🔴 Vendido</option>
-                            </select>
-                        </form>
+                    <div style="display: flex; gap: 15px; align-items: center;">
 
-                        
-                        <form action="{% url 'excluir_anuncio' anuncio.id_anuncio %}" method="POST" onsubmit="return confirm('Tem a certeza que deseja excluir este anúncio?');">
+                        <form action="{% url 'excluir_anuncio' anuncio.id_anuncio %}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este anúncio?');" style="margin: 0;">
                             {% csrf_token %}
-                            <button type="submit" style="background: none; border: none; color: red; text-decoration: underline; cursor: pointer; font-size: 13px; margin-top: 5px;">
-                                Excluir Anúncio
-                            </button>
+                            <button type="submit" style="background: none; border: none; color: red; text-decoration: underline; cursor: pointer; font-size: 13px;">Excluir</button>
                         </form>
+                        
 
+                        <a href="{% url 'editar_anuncio' anuncio.id_anuncio %}" class="btn-primary" style="padding: 6px 16px; border-radius: 4px; text-decoration: none; font-size: 13px;">Editar Anúncio</a>
                     </div>
+                </div>
             {% endfor %}
 
         {% else %}
