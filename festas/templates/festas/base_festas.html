@@ -1,17 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <header class="header-festas">
-        <h1>Área de Festas</h1>
-        
-        <div class="botoes">
-            <a href="{% url 'feed_festas' %}" class="btn-primary btn-verde">Ver Feed</a>
-            <a href="{% url 'criar_festa' %}" class="btn-primary">Criar Nova Festa</a>
-        </div>
-    </header>
+<header class="header-festas">
+    <h1>Área de Festas</h1>
 
-    <div class="conteudo-festas">
-        {% block festas_content %}
-        {% endblock %}
+    <div class="botoes">
+        <a href="{% url 'feed_festas' %}" class="btn-primary btn-verde">Ver Feed</a>
+        {% if user.is_authenticated %}
+        {% if user.adm or user.instituicao %}
+        <a href="{% url 'criar_festa' %}" class="btn-primary">Criar Nova Festa</a>
+        {% endif %}
+        {% endif %}
     </div>
+</header>
+
+<div class="conteudo-festas">
+    {% block festas_content %}
+    {% endblock %}
+</div>
 {% endblock %}

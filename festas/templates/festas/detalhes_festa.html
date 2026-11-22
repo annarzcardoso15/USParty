@@ -2,22 +2,43 @@
 
 {% block festas_content %}
     <a href="{% url 'feed_festas' %}" style="color: var(--lavender-grey); text-decoration: none;">&larr; Voltar para o Feed</a>
-    
-    <div style="background-color: white; padding: 30px; border-radius: 8px; border-top: 5px solid var(--cerulean); margin-top: 20px;">
-        <h1 style="color: var(--vintage-berry); margin-bottom: 10px;">{{ festa.nome_festa }}</h1>
-        
-        <p><strong>Data:</strong> {{ festa.data_festa }}</p>
-        <p><strong>Lotes Cadastrados:</strong> {{ festa.lotes }}</p>
-        <p><strong>Tipos de Ingresso:</strong> {{ festa.tipos_ingressos_disponiveis }}</p>
-        
-        <h3 style="margin-top: 20px; color: var(--cerulean);">Organizadores:</h3>
-        <ul>
 
-            {% for org in festa.organizadores.all %}
-                <li>{{ org.nome }}</li>
-            {% empty %}
-                <li>Nenhum organizador registrado ainda.</li>
-            {% endfor %}
-        </ul>
+    <div class="detalhes-card">
+        <div class="detalhes-imagem">
+            {% if festa.imagem %}
+                <img src="{{ festa.imagem }}" alt="{{ festa.nome_festa }}">
+            {% else %}
+                <div class="card-img-placeholder">Sem imagem</div>
+            {% endif %}
+        </div>
+
+        <div class="detalhes-info">
+            <h1>{{ festa.nome_festa }}</h1>
+            <p><strong>Data:</strong> {{ festa.data_festa }}</p>
+            <p><strong>Lotes:</strong> {{ festa.lotes }}</p>
+            <p><strong>Tipos de Ingresso:</strong> {{ festa.tipo_ingresso_disponivel }}</p>
+
+            <h3>Organizadores:</h3>
+            <ul>
+                {% for org in festa.organizadores.all %}
+                    <li>{{ org }}</li>
+                {% empty %}
+                    <li>Nenhum organizador registrado.</li>
+                {% endfor %}
+            </ul>
+
+            <h3>Vendedores Oficiais:</h3>
+            <ul>
+                {% for vendedor in festa.vendedores_oficiais.all %}
+                    <li>{{ vendedor }}</li>
+                {% empty %}
+                    <li>Nenhum vendedor oficial cadastrado.</li>
+                {% endfor %}
+            </ul>
+
+            <div style="margin-top: 20px;">
+                <a href="{% url 'catalogo' festa.idfesta %}" class="btn-primary">Ver ingressos</a>
+            </div>
+        </div>
     </div>
 {% endblock %}
