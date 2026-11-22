@@ -29,39 +29,30 @@ def criar_etapa1(request):
 @login_required(login_url='login')
 def criar_etapa2(request):
     quantidade = request.session.get('quantidade_ingressos', 1)
-    
     AnuncioFormSet = formset_factory(Etapa2Form, extra=quantidade)
     
     if request.method == 'POST':
         formset = AnuncioFormSet(request.POST)
+        
         if formset.is_valid():
             festa_id = request.session.get('festa_id')
             festa = get_object_or_404(Festa, idfesta=festa_id)
             
-
-            pessoal_teste = Pessoal.objects.first()
             status_teste = Status.objects.first()
-
-            
-        if formset.is_valid():
-            festa_id = request.session.get('festa_id')
-            festa = get_object_or_404(Festa, idfesta=festa_id)
-            
-
-            anuncio.pessoal = request.user.pessoal
             
             for form in formset:
                 if form.has_changed():
-                    anuncio = form.save(commit=False)
-                    anuncio.festa = festa
                     
-
-                    anuncio.pessoal = pessoal_teste 
+                    anuncio = form.save(commit=False)
+                    
+                    
+                    anuncio.festa = festa
+                    anuncio.pessoal = request.user.pessoal  
                     anuncio.status = status_teste
+                    
                     
                     anuncio.save()
             
-
             if 'festa_id' in request.session:
                 del request.session['festa_id']
             if 'quantidade_ingressos' in request.session:
@@ -96,3 +87,44 @@ def meus_anuncios(request):
         'anuncios': anuncios
     }
     return render(request, 'ingressos/meus_anuncios.html', context)
+@login_required(login_url='login')
+def editar_preco(request, id_anuncio):
+    # Busca o anúncio garantindo que pertence ao utilizador logado
+    anuncio = get_object_or_404(Anuncio, id_anuncio=id_anuncio, pessoal=request.user.pessoal)
+    if request.method == 'POST':
+        novo_preco = request.POST.get('preco')
+        if novo_preco:
+            anuncio.preco = novo_preco
+            anuncio.save()
+    return redirect('meus_anuncios')
+
+@login_required(login_url='login')
+def atualizar_status(request, id_anuncio):
+    anuncio = get_object_or_404(Anuncio, id_anuncio=id_anuncio, pessoal=request.user.pessoal)
+    if request.method == 'POST':
+        novo_status = request.POST.get('status_escolhido')
+        status = anuncio.status
+        
+        # Atualiza os booleanos conforme a escolha
+        if novo_status == 'disponivel':
+            status.disponivel = True
+            status.em_negociacao = False
+            status.vendido = False
+        elif novo_status == 'em_negociacao':
+            status.disponivel = False
+            status.em_negociacao = True
+            status.vendido = False
+        elif novo_status == 'vendido':
+            status.disponivel = False
+            status.em_negociacao = False
+            status.vendido = True
+            
+        status.save()
+    return redirect('meus_anuncios')
+
+@login_required(login_url='login')
+def excluir_anuncio(request, id_anuncio):
+    anuncio = get_object_or_404(Anuncio, id_anuncio=id_anuncio, pessoal=request.user.pessoal)
+    if request.method == 'POST':
+        anuncio.delete()
+    return redirect('meus_anuncios')
