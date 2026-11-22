@@ -61,7 +61,7 @@ def criar_etapa2(request):
 def catalogo_ingressos(request, festa_id):
     festa = get_object_or_404(Festa, idfesta=festa_id)
     
-    anuncios = Anuncio.objects.filter(festa=festa).order_by('-status__disponivel', '-status__em_negociacao')
+    anuncios = Anuncio.objects.filter(festa=festa, status__vendido=False).order_by('-status__disponivel', '-status__em_negociacao')
     
     context = {
         'festa': festa,
