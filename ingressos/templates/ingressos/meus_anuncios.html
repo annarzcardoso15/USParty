@@ -57,14 +57,35 @@
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
                     </div>
                     
-                    <div style="text-align: right;">
-                        <p style="margin-bottom: 5px; font-size: 14px; color: #888;">Valor Anunciado:</p>
-                        <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
-                        <p style="margin-top: 15px; font-size: 13px; color: #28a745; font-weight: bold;">
-                            ✓ Ativo na Vitrine
-                        </p>
+                    <div style="text-align: right; display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                        
+                        
+                        <form action="{% url 'editar_preco' anuncio.id_anuncio %}" method="POST" style="display: flex; gap: 5px; align-items: center;">
+                            {% csrf_token %}
+                            <label style="font-size: 14px; color: #888;">R$</label>
+                            <input type="number" step="0.01" name="preco" value="{{ anuncio.preco }}" style="width: 80px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;">
+                            <button type="submit" class="btn-primary" style="padding: 4px 10px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer;">Salvar</button>
+                        </form>
+
+                        
+                        <form action="{% url 'atualizar_status' anuncio.id_anuncio %}" method="POST">
+                            {% csrf_token %}
+                            <select name="status_escolhido" onchange="this.form.submit()" style="padding: 5px; border-radius: 4px; border: 1px solid #ccc; font-size: 13px;">
+                                <option value="disponivel" {% if anuncio.status.disponivel %}selected{% endif %}>🟢 Disponível</option>
+                                <option value="em_negociacao" {% if anuncio.status.em_negociacao %}selected{% endif %}>🟡 Em Negociação</option>
+                                <option value="vendido" {% if anuncio.status.vendido %}selected{% endif %}>🔴 Vendido</option>
+                            </select>
+                        </form>
+
+                        
+                        <form action="{% url 'excluir_anuncio' anuncio.id_anuncio %}" method="POST" onsubmit="return confirm('Tem a certeza que deseja excluir este anúncio?');">
+                            {% csrf_token %}
+                            <button type="submit" style="background: none; border: none; color: red; text-decoration: underline; cursor: pointer; font-size: 13px; margin-top: 5px;">
+                                Excluir Anúncio
+                            </button>
+                        </form>
+
                     </div>
-                </div>
             {% endfor %}
 
         {% else %}
