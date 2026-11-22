@@ -38,20 +38,19 @@ def criar_etapa2(request):
             festa_id = request.session.get('festa_id')
             festa = get_object_or_404(Festa, idfesta=festa_id)
             
-            status_teste = Status.objects.first()
             
-            for form in formset:
-                if form.has_changed():
-                    
-                    anuncio = form.save(commit=False)
-                    
-                    
-                    anuncio.festa = festa
-                    anuncio.pessoal = request.user.pessoal  
-                    anuncio.status = status_teste
-                    
-                    
-                    anuncio.save()
+        for form in formset:
+            if form.has_changed():
+                anuncio = form.save(commit=False)
+                
+                novo_status = Status.objects.create()
+                
+                anuncio.festa = festa
+                anuncio.pessoal = request.user.pessoal
+                
+                anuncio.status = novo_status 
+                
+                anuncio.save()
             
             if 'festa_id' in request.session:
                 del request.session['festa_id']
