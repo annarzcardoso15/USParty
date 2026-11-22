@@ -3,7 +3,8 @@ from usuarios.models import Adm, Instituicao, Pessoal
 
 class Festa(models.Model):
     idfesta = models.AutoField(primary_key=True)
-    adm = models.ForeignKey(Adm, on_delete=models.CASCADE) 
+    imagem = models.URLField(max_length=500, null=True, blank=True)
+    adm = models.ForeignKey(Adm, on_delete=models.CASCADE, null=True, blank=True)
     nome_festa = models.CharField(max_length=255)
     data_festa = models.DateField()
     lotes = models.CharField(max_length=255)
