@@ -38,7 +38,7 @@ def feed_festas(request):
         'mes_ano': hoje.strftime('%m/%Y'),
     })
 
-@login_required
+@login_required(login_url='login')
 def criar_festa(request):
     is_adm = hasattr(request.user, 'adm')
     is_instituicao = hasattr(request.user, 'instituicao')
