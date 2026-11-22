@@ -9,7 +9,7 @@ from .models import ManifestarInteresse
 def manifestar_interesse(request, anuncio_id):
     # Só quem tem cadastro de pessoa pode comprar
     if not hasattr(request.user, 'pessoal'):
-        return redirect('feed_festas')
+        return render(request, 'negociacoes/sem_conta_pessoal.html')
 
     anuncio = get_object_or_404(Anuncio, pk=anuncio_id)
     erro = None
@@ -51,7 +51,7 @@ def manifestar_interesse(request, anuncio_id):
 @login_required(login_url='login')
 def minhas_compras(request):
     if not hasattr(request.user, 'pessoal'):
-        return redirect('feed_festas')
+        return render(request, 'negociacoes/sem_conta_pessoal.html')
     interesses = ManifestarInteresse.objects.filter(pessoal=request.user.pessoal).order_by('-id_interesse')
     return render(request, 'negociacoes/minhas_compras.html', {'interesses': interesses})
 
@@ -59,6 +59,6 @@ def minhas_compras(request):
 @login_required(login_url='login')
 def interessados(request):
     if not hasattr(request.user, 'pessoal'):
-        return redirect('feed_festas')
+        return render(request, 'negociacoes/sem_conta_pessoal.html')
     interesses = ManifestarInteresse.objects.filter(anuncio__pessoal=request.user.pessoal).order_by('-id_interesse')
     return render(request, 'negociacoes/interessados.html', {'interesses': interesses})
