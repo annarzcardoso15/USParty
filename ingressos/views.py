@@ -7,6 +7,7 @@ from django.forms import formset_factory
 from django.contrib.auth import get_user_model
 from .models import Anuncio, Festa, Status
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages  # NOVO
 
 @login_required(login_url='login')
 def criar_etapa1(request):
@@ -88,10 +89,16 @@ def editar_anuncio(request, id_anuncio):
     anuncio = get_object_or_404(Anuncio, id_anuncio=id_anuncio, pessoal=request.user.pessoal)
     
     if request.method == 'POST':
-        # Salva o novo preço
+        # NOVO: Salva o novo preço (USP008: tem que ser um número maior que zero)
         novo_preco = request.POST.get('preco')
-        if novo_preco:
-            anuncio.preco = novo_preco
+        try:
+            novo_preco = float(novo_preco)
+        except (TypeError, ValueError):
+            novo_preco = None
+        if novo_preco is None or novo_preco <= 0:
+            messages.error(request, 'Preço inválido. Digite um valor maior que zero.')
+            return render(request, 'ingressos/editar_anuncio.html', {'anuncio': anuncio})
+        anuncio.preco = novo_preco
         
         # Salva o novo status
         novo_status = request.POST.get('status_escolhido')
@@ -112,6 +119,7 @@ def editar_anuncio(request, id_anuncio):
         status.save()
         anuncio.save()
         
+        messages.success(request, 'Anúncio atualizado!')  # NOVO
         # Redireciona de volta para a lista
         return redirect('meus_anuncios')
         
