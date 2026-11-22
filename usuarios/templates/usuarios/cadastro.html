@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .auth-card {
+        max-width: 550px;
+        margin: 0 auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .tabs-tipo {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .tab-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid var(--fern);
+        background: white;
+        color: var(--vintage-berry);
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .tab-btn.ativo {
+        background: var(--fern);
+        color: white;
+    }
+    .form-grupo {
+        margin-bottom: 15px;
+    }
+    .form-grupo label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    .form-grupo input,
+    .form-grupo select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--lavender-grey);
+        border-radius: 5px;
+        background: white;
+        color: var(--vintage-berry);
+    }
+    .erro-campo {
+        color: #c0392b;
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="auth-card">
+    <div class="header-festas" style="margin-bottom: 20px; padding-bottom: 10px;">
+        <h1>Criar Conta no USParty</h1>
+        <p>Escolha o tipo de perfil para começar.</p>
+    </div>
+
+    <div class="tabs-tipo">
+        <button type="button" id="btn-pessoal" class="tab-btn {% if tipo_ativo != 'instituicao' %}ativo{% endif %}" onclick="alternarTipo('pessoal')">
+            Aluno / Pessoal
+        </button>
+        <button type="button" id="btn-instituicao" class="tab-btn {% if tipo_ativo == 'instituicao' %}ativo{% endif %}" onclick="alternarTipo('instituicao')">
+            Atlética / Instituição
+        </button>
+    </div>
+
+    <!-- Formulário Pessoal (USP002) -->
+    <form method="POST" id="form-pessoal" style="{% if tipo_ativo == 'instituicao' %}display:none;{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="tipo_conta" value="pessoal">
+        {% for field in form_pessoal %}
+            <div class="form-grupo" id="grupo-{{ field.name }}">
+                {{ field.label_tag }}
+                {{ field }}
+                {% for error in field.errors %}
+                    <div class="erro-campo">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn-primary" style="flex: 1;">Finalizar Cadastro</button>
+            <a href="{% url 'feed_festas' %}" class="btn-primary btn-verde">Cancelar</a>
+        </div>
+    </form>
+
+    <!-- Formulário Instituição (USP003) -->
+    <form method="POST" id="form-instituicao" style="{% if tipo_ativo != 'instituicao' %}display:none;{% endif %}">
+        {% csrf_token %}
+        <input type="hidden" name="tipo_conta" value="instituicao">
+        {% for field in form_instituicao %}
+            <div class="form-grupo">
+                {{ field.label_tag }}
+                {{ field }}
+                {% for error in field.errors %}
+                    <div class="erro-campo">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button type="submit" class="btn-primary" style="flex: 1;">Cadastrar Instituição</button>
+            <a href="{% url 'feed_festas' %}" class="btn-primary btn-verde">Cancelar</a>
+        </div>
+    </form>
+
+    <p style="margin-top: 20px; text-align: center;">
+        Já tem uma conta? <a href="{% url 'login' %}" style="color: var(--cerulean); font-weight: bold;">Entrar aqui</a>
+    </p>
+</div>
+
+<script>
+    function alternarTipo(tipo) {
+        document.getElementById('form-pessoal').style.display = (tipo === 'pessoal') ? 'block' : 'none';
+        document.getElementById('form-instituicao').style.display = (tipo === 'instituicao') ? 'block' : 'none';
+        document.getElementById('btn-pessoal').classList.toggle('ativo', tipo === 'pessoal');
+        document.getElementById('btn-instituicao').classList.toggle('ativo', tipo === 'instituicao');
+    }
+
+    function atualizarCampoInstituicao() {
+        const selectVinculo = document.getElementById('id_vinculo');
+        const grupoInstituicao = document.getElementById('grupo-instituicao');
+        if (selectVinculo && grupoInstituicao) {
+            grupoInstituicao.style.display = (selectVinculo.value === 'usp') ? 'none' : 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectVinculo = document.getElementById('id_vinculo');
+        if (selectVinculo) {
+            selectVinculo.addEventListener('change', atualizarCampoInstituicao);
+            atualizarCampoInstituicao(); // Executa logo ao carregar a página
+        }
+    });
+</script>
+{% endblock %}

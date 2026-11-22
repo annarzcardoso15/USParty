@@ -47,9 +47,9 @@
                     <div style="text-align: right;">
                         <p style="margin-bottom: 5px; font-size: 14px; color: #888;">Valor:</p>
                         <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
-                        <button class="btn-primary" style="margin-top: 15px; padding: 8px 20px; border-radius: 6px;">
+                        <a href="{% url 'manifestar_interesse' anuncio.id_anuncio %}" class="btn-primary" style="margin-top: 15px; padding: 8px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">
                             Comprar
-                        </button>
+                        </a>
                     </div>
                 </div>
             {% endfor %}

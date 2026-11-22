@@ -6,7 +6,9 @@ from .forms import Etapa1Form, Etapa2Form
 from django.forms import formset_factory
 from django.contrib.auth import get_user_model
 from .models import Anuncio, Festa, Status
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='login')
 def criar_etapa1(request):
     if request.method == 'POST':
         form = Etapa1Form(request.POST)
@@ -24,6 +26,7 @@ def criar_etapa1(request):
         
     return render(request, 'ingressos/etapa1.html', {'form': form})
 
+@login_required(login_url='login')
 def criar_etapa2(request):
     quantidade = request.session.get('quantidade_ingressos', 1)
     
@@ -45,7 +48,7 @@ def criar_etapa2(request):
             festa = get_object_or_404(Festa, idfesta=festa_id)
             
 
-            pessoal_teste = Pessoal.objects.first()
+            anuncio.pessoal = request.user.pessoal
             
             for form in formset:
                 if form.has_changed():
@@ -74,7 +77,7 @@ def criar_etapa2(request):
 def catalogo_ingressos(request, festa_id):
     festa = get_object_or_404(Festa, idfesta=festa_id)
     
-    anuncios = Anuncio.objects.filter(festa=festa)
+    anuncios = Anuncio.objects.filter(festa=festa, status__disponivel=True)
     
     context = {
         'festa': festa,
