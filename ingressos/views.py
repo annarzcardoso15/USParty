@@ -30,35 +30,29 @@ def criar_etapa1(request):
 def criar_etapa2(request):
     quantidade = request.session.get('quantidade_ingressos', 1)
     AnuncioFormSet = formset_factory(Etapa2Form, extra=quantidade)
-    
+
     if request.method == 'POST':
         formset = AnuncioFormSet(request.POST)
-        
+
         if formset.is_valid():
             festa_id = request.session.get('festa_id')
             festa = get_object_or_404(Festa, idfesta=festa_id)
-            
-            
-        for form in formset:
-            if form.has_changed():
-                anuncio = form.save(commit=False)
-                
-                novo_status = Status.objects.create()
-                
-                anuncio.festa = festa
-                anuncio.pessoal = request.user.pessoal
-                
-                anuncio.status = novo_status 
-                
-                anuncio.save()
-            
+
+            for form in formset:
+                if form.has_changed():
+                    anuncio = form.save(commit=False)
+                    anuncio.festa = festa
+                    anuncio.pessoal = request.user.pessoal
+                    anuncio.status = Status.objects.create()
+                    anuncio.save()
+
+
             if 'festa_id' in request.session:
                 del request.session['festa_id']
             if 'quantidade_ingressos' in request.session:
                 del request.session['quantidade_ingressos']
-                
+
             return redirect('catalogo_ingressos', festa_id=festa_id)
-            
     else:
         formset = AnuncioFormSet()
 
