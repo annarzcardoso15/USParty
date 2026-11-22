@@ -18,7 +18,7 @@ class Etapa1Form(forms.ModelForm):
 class Etapa2Form(forms.ModelForm):
     class Meta:
         model = Anuncio
-        fields = ['lote', 'tipo_ingresso', 'preco'] 
+        fields = ['lote', 'tipo_ingresso', 'preco']
         labels = {
             'lote': 'Lote do Ingresso',
             'preco': 'Preço',
@@ -26,7 +26,9 @@ class Etapa2Form(forms.ModelForm):
         }
         widgets = {
             'preco': forms.NumberInput(attrs={'step': '0.01'}),
-            'tipo_ingresso': forms.TextInput(attrs={'placeholder': 'Ex: Aluno, VIP, Pista'}),
-
+            'tipo_ingresso': forms.Select(choices=[
+                ('Aluno USP', 'Aluno USP'),
+                ('Não Aluno', 'Não Aluno')
+            ]),
         }
         
