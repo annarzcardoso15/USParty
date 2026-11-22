@@ -97,7 +97,7 @@ def perfil_view(request):
     user = request.user
     perfil_pessoal = Pessoal.objects.filter(usuario=user).first()
     perfil_instituicao = Instituicao.objects.filter(usuario=user).first()
-    is_adm = Adm.objects.filter(usuario=user).exists() or user.is_superuser or user.is_staff
+    is_adm = Adm.objects.filter(usuario=user).exists() or user.is_superuser
     if is_adm and not Adm.objects.filter(usuario=user).exists():
         Adm.objects.create(usuario=user)
 
