@@ -132,7 +132,35 @@
 <div class="perfil-grid">
     <!-- Coluna Esquerda: Dados Básicos -->
     <div class="card-box">
-        {% if perfil_pessoal %}
+        {% if is_adm %}
+            <h2 style="color: var(--cerulean); margin-bottom: 15px;">
+                {% if perfil_pessoal %}{{ perfil_pessoal.nome }}{% elif perfil_instituicao %}{{ perfil_instituicao.nome }}{% else %}Administrador{% endif %}
+            </h2>
+            <div class="dado-item">
+                <div class="dado-label">Cargo / Acesso</div>
+                <div><strong style="color: var(--vintage-berry);">Administrador do Sistema</strong></div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">Usuário</div>
+                <div>@{{ user.username }}</div>
+            </div>
+            <div class="dado-item">
+                <div class="dado-label">E-mail</div>
+                <div>{{ user.email }}</div>
+            </div>
+            {% if perfil_pessoal %}
+                <div class="dado-item">
+                    <div class="dado-label">Vínculo Pessoal</div>
+                    <div>{{ perfil_pessoal.instituicao }}</div>
+                </div>
+                <div class="dado-item">
+                    <div class="dado-label">Telefone</div>
+                    <div>{{ perfil_pessoal.telefone }}</div>
+                </div>
+            {% endif %}
+            <a href="/admin/" class="btn-primary btn-verde" style="margin-top: 10px; display: block; text-align: center; width: 100%; box-sizing: border-box;">Acessar Painel Django Admin</a>
+
+        {% elif perfil_pessoal %}
             <h2 style="color: var(--cerulean); margin-bottom: 15px;">{{ perfil_pessoal.nome }}</h2>
             <div class="dado-item">
                 <div class="dado-label">Tipo de Conta</div>
@@ -168,6 +196,7 @@
                     </div>
                 </div>
             {% endif %}
+
         {% elif perfil_instituicao %}
             <h2 style="color: var(--cerulean); margin-bottom: 15px;">{{ perfil_instituicao.nome }}</h2>
             <div class="dado-item">
@@ -186,29 +215,92 @@
                 <div class="dado-label">Telefone</div>
                 <div>{{ perfil_instituicao.telefone }}</div>
             </div>
-        {% elif is_adm %}
-            <h2 style="color: var(--cerulean); margin-bottom: 15px;">Administrador</h2>
-            <div class="dado-item">
-                <div class="dado-label">Usuário</div>
-                <div>{{ user.username }}</div>
-            </div>
-            <div class="dado-item">
-                <div class="dado-label">E-mail</div>
-                <div>{{ user.email }}</div>
-            </div>
-            <a href="/admin/" class="btn-primary btn-verde" style="margin-top: 10px; display: inline-block; text-align: center; width: 100%;">Acessar Painel Django Admin</a>
         {% endif %}
 
         <div style="margin-top: 20px;">
-            <a href="{% url 'logout' %}" class="btn-primary" style="width: 100%; text-align: center; display: block;">Sair da Conta</a>
+            <a href="{% url 'logout' %}" class="btn-primary" style="width: 100%; text-align: center; display: block; box-sizing: border-box;">Sair da Conta</a>
         </div>
     </div>
 
-    <!-- Coluna Direita: Totalizações (USP011, USP012, USP013) -->
+    <!-- Coluna Direita: Totalizações (USP013, USP011, USP012) -->
     <div class="card-box">
+        {% if is_adm and usp013 %}
+            <!-- USP013: Totalização Geral (Administrador) -->
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização Geral do Sistema</h2>
+
+            <table class="tabela-resumo">
+                <thead>
+                    <tr>
+                        <th>Categoria</th>
+                        <th>Métrica</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3"><strong>Usuários</strong></td>
+                        <td>Contas Pessoais (Alunos/Externos)</td>
+                        <td>{{ usp013.total_pessoal }}</td>
+                    </tr>
+                    <tr>
+                        <td>Instituições / Atléticas</td>
+                        <td>{{ usp013.total_instituicoes }}</td>
+                    </tr>
+                    <tr>
+                        <td>Administradores</td>
+                        <td>{{ usp013.total_admins }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eventos</strong></td>
+                        <td>Festas Cadastradas</td>
+                        <td>{{ usp013.total_festas }}</td>
+                    </tr>
+                    <tr>
+                        <td rowspan="5"><strong>Ingressos & Negociações</strong></td>
+                        <td>Total de Anúncios</td>
+                        <td><strong>{{ usp013.total_anuncios }}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Disponíveis</td>
+                        <td>{{ usp013.anuncios_disponiveis }}</td>
+                    </tr>
+                    <tr>
+                        <td>Em Negociação</td>
+                        <td>{{ usp013.anuncios_negociacao }}</td>
+                    </tr>
+                    <tr>
+                        <td>Vendidos</td>
+                        <td>{{ usp013.anuncios_vendidos }}</td>
+                    </tr>
+                    <tr>
+                        <td>Interesses Manifestados (Negociações)</td>
+                        <td>{{ usp013.total_negociacoes }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Financeiro</strong></td>
+                        <td>Volume Geral Transacionado</td>
+                        <td><strong style="color: var(--cerulean);">R$ {{ usp013.volume_transacionado|floatformat:2 }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Gestão de Administradores -->
+            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--pastel-petal);">
+                <h3 style="color: var(--cerulean); margin-bottom: 8px;">Promover Usuário a Administrador</h3>
+                <p style="font-size: 0.9rem; color: #555;">Informe o usuário ou e-mail de uma conta já cadastrada para conceder acesso administrativo:</p>
+                <form method="POST" class="form-promover">
+                    {% csrf_token %}
+                    <input type="text" name="identificador_admin" placeholder="Username ou e-mail do usuário" required>
+                    <button type="submit" name="promover_admin" class="btn-primary">Tornar Admin</button>
+                </form>
+            </div>
+        {% endif %}
+
         {% if perfil_pessoal and usp011 %}
             <!-- USP011: Totalização Pessoal -->
-            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização da Conta Pessoal</h2>
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px; {% if is_adm %}margin-top: 35px; padding-top: 25px; border-top: 2px solid var(--ash-grey);{% endif %}">
+                Totalização da Conta Pessoal
+            </h2>
 
             <table class="tabela-resumo">
                 <thead>
@@ -274,10 +366,13 @@
             {% empty %}
                 <p>Você ainda não possui ingressos anunciados.</p>
             {% endfor %}
+        {% endif %}
 
-        {% elif perfil_instituicao and usp012 %}
+        {% if perfil_instituicao and usp012 %}
             <!-- USP012: Totalização de Atlética / Instituição -->
-            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização da Instituição</h2>
+            <h2 style="color: var(--vintage-berry); margin-bottom: 15px; {% if is_adm %}margin-top: 35px; padding-top: 25px; border-top: 2px solid var(--ash-grey);{% endif %}">
+                Totalização da Instituição
+            </h2>
 
             <div class="kpi-grid">
                 <div class="kpi-card">
@@ -371,77 +466,6 @@
             {% else %}
                 <p>Nenhuma festa vinculada a esta instituição ainda.</p>
             {% endif %}
-
-        {% elif is_adm and usp013 %}
-            <!-- USP013: Totalização Geral (Administrador) -->
-            <h2 style="color: var(--vintage-berry); margin-bottom: 15px;">Totalização Geral do Sistema</h2>
-
-            <table class="tabela-resumo">
-                <thead>
-                    <tr>
-                        <th>Categoria</th>
-                        <th>Métrica</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td rowspan="3"><strong>Usuários</strong></td>
-                        <td>Contas Pessoais (Alunos/Externos)</td>
-                        <td>{{ usp013.total_pessoal }}</td>
-                    </tr>
-                    <tr>
-                        <td>Instituições / Atléticas</td>
-                        <td>{{ usp013.total_instituicoes }}</td>
-                    </tr>
-                    <tr>
-                        <td>Administradores</td>
-                        <td>{{ usp013.total_admins }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Eventos</strong></td>
-                        <td>Festas Cadastradas</td>
-                        <td>{{ usp013.total_festas }}</td>
-                    </tr>
-                    <tr>
-                        <td rowspan="5"><strong>Ingressos & Negociações</strong></td>
-                        <td>Total de Anúncios</td>
-                        <td><strong>{{ usp013.total_anuncios }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Disponíveis</td>
-                        <td>{{ usp013.anuncios_disponiveis }}</td>
-                    </tr>
-                    <tr>
-                        <td>Em Negociação</td>
-                        <td>{{ usp013.anuncios_negociacao }}</td>
-                    </tr>
-                    <tr>
-                        <td>Vendidos</td>
-                        <td>{{ usp013.anuncios_vendidos }}</td>
-                    </tr>
-                    <tr>
-                        <td>Interesses Manifestados (Negociações)</td>
-                        <td>{{ usp013.total_negociacoes }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Financeiro</strong></td>
-                        <td>Volume Geral Transacionado</td>
-                        <td><strong style="color: var(--cerulean);">R$ {{ usp013.volume_transacionado|floatformat:2 }}</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Gestão de Administradores -->
-            <div style="margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--pastel-petal);">
-                <h3 style="color: var(--cerulean); margin-bottom: 8px;">Promover Usuário a Administrador</h3>
-                <p style="font-size: 0.9rem; color: #555;">Informe o usuário ou e-mail de uma conta já cadastrada para conceder acesso administrativo:</p>
-                <form method="POST" class="form-promover">
-                    {% csrf_token %}
-                    <input type="text" name="identificador_admin" placeholder="Username ou e-mail do usuário" required>
-                    <button type="submit" name="promover_admin" class="btn-primary">Tornar Admin</button>
-                </form>
-            </div>
         {% endif %}
     </div>
 </div>

@@ -49,10 +49,11 @@
         <div class="links">
             <a href="{% url 'feed_festas' %}">Festas</a>
             {% if user.is_authenticated %}
+                {% if user.adm or user.instituicao or user.is_staff or user.is_superuser %}
+                    <a href="/festas/criar/">Criar Festa</a>
+                {% endif %}
                 {% if user.pessoal %}
                     <a href="{% url 'meus_anuncios' %}">Meus Ingressos</a>
-                {% elif user.adm or user.instituicao or user.is_staff or user.is_superuser %}
-                    <a href="/festas/criar/">Criar Festa</a>
                 {% endif %}
                 <a href="{% url 'perfil' %}">Perfil ({{ user.username }})</a>
             {% else %}
