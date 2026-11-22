@@ -42,9 +42,14 @@
     
     <div style="width: 100%; max-width: 800px;">
         
-        <h1 style="text-align: center; margin-bottom: 40px; color: var(--cerulean);">
-            Meus Anúncios
-        </h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h1 style="color: var(--cerulean); margin: 0;">
+                Meus Anúncios
+            </h1>
+            <a href="{% url 'criar_etapa1' %}" class="btn-primary" style="padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+                + Anunciar Ingresso
+            </a>
+        </div>
         
         {% if anuncios %}
             
@@ -69,11 +74,13 @@
                     <p style="margin-bottom: 2px; font-size: 14px; color: #888;">Valor Anunciado:</p>
                     <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
                     
-                    <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; {% if anuncio.status.disponivel %}color: #28a745;{% elif anuncio.status.em_negociacao %}color: #ffc107;{% else %}color: #dc3545;{% endif %}">
-                            {% if anuncio.status.disponivel %}🟢 Disponível
-                            {% elif anuncio.status.em_negociacao %}🟡 Em Negociação
-                            {% else %}🔴 Vendido{% endif %}
-                        </p>
+                    {% if anuncio.status.disponivel %}
+                        <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #28a745;">🟢 Disponível</p>
+                    {% elif anuncio.status.em_negociacao %}
+                        <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #ffc107;">🟡 Em Negociação</p>
+                    {% else %}
+                        <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #dc3545;">🔴 Vendido</p>
+                    {% endif %}
 
                     <div style="display: flex; gap: 15px; align-items: center;">
 
@@ -93,9 +100,7 @@
         {% else %}
             <div style="text-align: center; padding: 40px; background-color: #fff5f7; border-radius: 12px;">
                 <h3 style="color: var(--vintage-berry);">Você ainda não tem ingressos anunciados!</h3>
-                <p style="margin-top: 15px;">Quando criar um anúncio, ele aparecerá aqui.</p>
-                <br>
-                <a href="{% url 'criar_etapa1' %}" class="btn-primary" style="padding: 10px 20px; border-radius: 6px; text-decoration: none;">Anunciar Ingresso</a>
+                <p style="margin-top: 15px;">Clique em "+ Anunciar Ingresso" lá em cima para criar o seu primeiro.</p>
             </div>
         {% endif %}
 

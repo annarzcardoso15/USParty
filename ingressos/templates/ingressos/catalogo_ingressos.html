@@ -60,7 +60,7 @@
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
                         
                         <div style="margin-top: 10px; display: flex; align-items: center;">
-                            <p style="margin: 0;"><strong>Vendedor:</strong> {{ anuncio.pessoal.user.username }}</p>
+                            <p style="margin: 0;"><strong>Vendedor:</strong> {{ anuncio.pessoal.nome }}</p>
     
                             {% if anuncio.pessoal in anuncio.festa.vendedores_oficiais.all %}
                                 <span style="background: #2e7d32; color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; margin-left: 8px;">
@@ -73,13 +73,17 @@
                     <div style="text-align: right;">
                         <p style="margin-bottom: 5px; font-size: 14px; color: #888;">Valor:</p>
                         <div class="preco-destaque">R$ {{ anuncio.preco }}</div>
-                        <a href="{% url 'manifestar_interesse' anuncio.id_anuncio %}" class="btn-primary" style="margin-top: 15px; padding: 8px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">
-                            Comprar
-                        </a>
-                    </div> 
-
-                </div> 
-            
+                        {% if anuncio.status.disponivel %}
+                            <a href="{% url 'manifestar_interesse' anuncio.id_anuncio %}" class="btn-primary" style="margin-top: 15px; padding: 8px 20px; border-radius: 6px; text-decoration: none; display: inline-block;">
+                                Comprar
+                            </a>
+                        {% elif anuncio.status.em_negociacao %}
+                            <p style="margin-top: 15px; font-weight: bold; color: #ffc107;">🟡 Em Negociação</p>
+                        {% else %}
+                            <p style="margin-top: 15px; font-weight: bold; color: #dc3545;">🔴 Vendido</p>
+                        {% endif %}
+                    </div>
+                </div>
             {% endfor %}
 
             </div>
