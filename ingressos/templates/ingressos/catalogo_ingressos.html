@@ -46,7 +46,13 @@
             {% for anuncio in anuncios %}
                 <div class="caixa-anuncio">
                     <div class="detalhes-ingresso">
-                        <h3 style="color: var(--cerulean); margin-bottom: 10px;">{{ anuncio.tipo_ingresso }}</h3>
+                        <h3 style="color: var(--cerulean); margin: 5px 0 10px 0;">
+                            {% if anuncio.tipo_ingresso %}
+                                Aluno USP
+                            {% else %}
+                                Não Aluno
+                            {% endif %}
+                        </h3>
                         <p><strong>Lote:</strong> {{ anuncio.lote }}</p>
                         <div style="margin-top: 10px; display: flex; align-items: center;">
                             <p style="margin: 0;"><strong>Vendedor:</strong> {{ anuncio.pessoal.user.username }}</p>
