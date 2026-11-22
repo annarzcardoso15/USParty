@@ -185,7 +185,7 @@ def perfil_view(request):
         })
 
     # USP012: Totalização de Atlética / Instituição
-    elif perfil_instituicao:
+    if perfil_instituicao:
         festas_inst = perfil_instituicao.festas_organizadas.all().order_by('data_festa')
         resumo_festas = []
         total_anuncios_inst = 0
@@ -221,7 +221,7 @@ def perfil_view(request):
         })
 
     # USP013: Totalização Geral (Administrador)
-    elif is_adm:
+    if is_adm:
         todos_anuncios = Anuncio.objects.select_related('status', 'festa')
         vendidos_geral = todos_anuncios.filter(status__vendido=True)
         disponiveis_geral = todos_anuncios.filter(status__disponivel=True, status__vendido=False, status__em_negociacao=False)
