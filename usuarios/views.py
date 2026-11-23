@@ -8,10 +8,7 @@ from .forms import CadastroPessoalForm, CadastroInstituicaoForm, LoginForm
 from ingressos.models import Anuncio
 from festas.models import Festa
 from negociacoes.models import ManifestarInteresse
-python
-from django.urls import path
-from django.contrib.auth import views as auth_views
-from . import views
+
 
 def cadastro_view(request):
     tipo = request.POST.get('tipo_conta', 'pessoal')
