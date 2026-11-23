@@ -263,3 +263,14 @@ main {
     font-size: 0.7rem;
     margin-top: 2px;
 }
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 40px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
+    width: auto;
+    object-fit: contain;
+}
