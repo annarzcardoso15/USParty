@@ -32,6 +32,8 @@ body {
     align-items: center;
     color: white;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    height: 75px; /* Mantém a barra com altura fixa */
+    padding: 0 30px;
 }
 
 .navbar .logo {
@@ -270,7 +272,7 @@ main {
 }
 
 .logo-img {
-    height: 40px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
+    height: 85px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
     width: auto;
     object-fit: contain;
 }
