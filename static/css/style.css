@@ -273,7 +273,7 @@ main {
 }
 
 .logo-img {
-    height: 115px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
+    height: 125px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
     width: auto;
     object-fit: contain;
 }
