@@ -32,7 +32,7 @@ body {
     align-items: center;
     color: white;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-    height: 110px; /* Mantém a barra com altura fixa */
+    height: 140px; /* Mantém a barra com altura fixa */
     padding: 0 40px;
 }
 
@@ -44,7 +44,7 @@ body {
 .navbar .links {
     display: flex;
     gap: 20px; 
-    font-size: 1.05rem; /* Deixa os links à direita proporcionais à barra maior */
+    font-size: 1.25rem; /* Deixa os links à direita proporcionais à barra maior */
 }
 
 .navbar a {
@@ -273,7 +273,7 @@ main {
 }
 
 .logo-img {
-    height: 125px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
+    height: 115px; /* Ajuste entre 35px e 50px conforme a proporção da sua logo */
     width: auto;
     object-fit: contain;
 }
