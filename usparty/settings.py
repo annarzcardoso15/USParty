@@ -132,4 +132,7 @@ MAILERS = {
     },
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+import django
+if django.VERSION < (6, 1):
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
